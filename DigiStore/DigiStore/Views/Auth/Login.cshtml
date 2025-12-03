@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "ورود به سایت";
+}
+
+<div class="container mt-5 col-md-4">
+    <div class="card shadow">
+        <div class="card-body text-center">
+            <h4>ورود / ثبت نام</h4>
+            <p>برای ورود شماره موبایل خود را وارد کنید</p>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+
+            <form asp-action="Login" method="post">
+                <input type="text" name="phoneNumber" class="form-control mb-3 text-center" placeholder="09xxxxxxxxx" required />
+                <button type="submit" class="btn btn-primary w-100">ارسال کد تایید</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "تایید شماره موبایل";
+}
+
+<div class="container mt-5 col-md-4">
+    <div class="card shadow">
+        <div class="card-body text-center">
+            <h4>کد تایید را وارد کنید</h4>
+            <p>کد ارسال شده به @ViewBag.Mobile</p>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+
+            <form asp-action="Verify" method="post">
+                <input type="hidden" name="mobile" value="@ViewBag.Mobile" />
+                <input type="text" name="code" class="form-control mb-3 text-center" placeholder="12345" required />
+                <button type="submit" class="btn btn-success w-100">ورود به حساب کاربری</button>
+            </form>
+        </div>
+    </div>
+</div>
