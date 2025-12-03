@@ -1,49 +1,48 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿<!doctype html>
+<html dir="rtl" lang="fa-IR">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DigiStore</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DigiStore.styles.css" asp-append-version="true" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>فروشگاه موبولند</title>
+
+    <link rel="icon" href="/wp-content/uploads/2024/11/cropped-fav-32x32.png" sizes="32x32" />
+    <link rel="icon" href="/wp-content/uploads/2024/11/cropped-fav-192x192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/wp-content/uploads/2024/11/cropped-fav-180x180.png" />
+    <link rel="icon" type="image/x-icon" href="/wp-content/themes/moboland/img/fav.png">
+
+    <partial name="_Styles" />
+
+    <script src="/wp-includes/js/jquery/jquery.minf43b.js"></script>
+    <script src="/wp-includes/js/jquery/jquery-migrate.min5589.js"></script>
+
+    <script src="/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.minf967.js"></script>
+    <script src="/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min5aa6.js"></script>
+
+    <script type="text/javascript">
+        var wc_add_to_cart_params = { "ajax_url": "/Home/Ajax", "wc_ajax_url": "/?wc-ajax=%%endpoint%%", "i18n_view_cart": "مشاهده سبد خرید", "cart_url": "/Cart", "is_cart": "", "cart_redirect_after_add": "no" };
+        var woocommerce_params = { "ajax_url": "/Home/Ajax", "wc_ajax_url": "/?wc-ajax=%%endpoint%%" };
+    </script>
+
+    <script src="/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.mind3a6.js"></script>
+    <script src="/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.mind3a6.js"></script>
+
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DigiStore</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+<body class="rtl home wp-singular page-template page-template-elementor_header_footer page page-id-247 wp-theme-moboland theme-moboland woocommerce-no-js woo-variation-swatches wvs-behavior-blur wvs-theme-moboland wvs-show-label wvs-tooltip elementor-default elementor-template-full-width elementor-kit-244 elementor-page elementor-page-247">
+
+    <partial name="_Modals" />
+
+    <partial name="_Header" />
+
+    <div class="main-container">
+        @RenderBody()
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - DigiStore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <partial name="_Footer" />
+
+    <partial name="_Scripts" />
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

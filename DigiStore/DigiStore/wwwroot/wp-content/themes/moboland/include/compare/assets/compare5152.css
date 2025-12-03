@@ -1,0 +1,209 @@
+/* ====== پاپ‌آپ کلی ====== */
+#compare-popup {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+    border: 1px solid #ccc;
+    z-index: 9999;
+    overflow-y: auto;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    padding: 20px;
+}
+
+#compare-popup .close-compare-popup {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+}
+
+
+/* ====== محتوای جدول ====== */
+.moboland-compare-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.moboland-compare-wrapper th,
+.moboland-compare-wrapper td {
+    border: 1px solid #e0e0e0;
+    padding: 15px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.moboland-compare-wrapper th {
+    background: #f5f5f5;
+    font-weight: bold;
+    position: relative;
+}
+
+.moboland-compare-wrapper td img {
+    max-width: 100px;
+    height: auto;
+}
+
+/* دکمه حذف */
+.moboland-compare-wrapper .remove-compare-item {
+    background: #ff5b5b;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+/* دکمه پاک‌کردن همه */
+.moboland-compare-wrapper .compare-header {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.moboland-compare-wrapper .clear-compare-btn {
+    background: #ff5b5b;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* استایل لیست ویژگی‌ها */
+.moboland-compare-wrapper ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+}
+
+.moboland-compare-wrapper li {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.compare-table tr td > del {
+    color: #e74c3c;
+    opacity: .8;
+    margin-left: 10px;
+}
+
+.compare-table tr td ins {
+    text-decoration: none;
+    color: #303030;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.compare-table tr td > span.woocommerce-Price-amount > bdi {
+    text-decoration: none;
+    color: #303030;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.compare-table tr td p.product {
+    border: none !important;
+}
+
+.compare-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4caf50;
+    color: #fff;
+    padding: 12px 24px;
+    font-size: 14px;
+    border-radius: 6px;
+    z-index: 99999;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 3s forwards;
+    max-width: 90vw;
+    text-align: center;
+}
+
+
+@keyframes fadeInOut {
+    0%   { opacity: 0; transform: translateY(-20px); }
+    10%  { opacity: 1; transform: translateY(0); }
+    90%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
+
+
+.compare-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 99998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.compare-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ccc;
+    border-top: 5px solid #4caf50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.compare-toast-remove {
+    position: fixed;
+    top: 70px; /* پایین‌تر از toast قبلی تا تداخل نکنه */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #f44336; /* قرمز برای حذف */
+    color: #fff;
+    padding: 12px 24px;
+    font-size: 14px;
+    border-radius: 6px;
+    z-index: 99999;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    display: none;
+    animation: fadeInOut 3s forwards;
+    max-width: 90vw;
+    text-align: center;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    10%, 90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+
+
+
+
+
+
+/* اسکرول برای موبایل */
+@media (max-width: 768px) {
+    #compare-popup {
+        overflow-x: scroll;
+    }
+
+    .moboland-compare-wrapper table {
+        min-width: 500px;
+    }
+}
