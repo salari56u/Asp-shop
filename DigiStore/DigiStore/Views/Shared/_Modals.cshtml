@@ -1,0 +1,76 @@
+﻿<div id="compare-popup" style="display: none;">
+    <button onclick="document.getElementById('compare-popup').style.display='none'" class="close-compare-popup">×</button>
+    <div id="compare-popup-content"></div>
+</div>
+
+<div id="compare-toast" class="compare-toast" style="display: none;">
+    محصول به لیست مقایسه اضافه شد.
+</div>
+
+<div id="compare-loader" class="compare-loader" style="display: none;">
+    <div class="compare-spinner"></div>
+</div>
+
+<div id="compare-toast-remove" class="compare-toast compare-toast-remove"></div>
+
+<div id="modal_add_to_cart" class="modal">
+    <div class="modal-content modal-add-to-cart">
+        <i class="fa-solid fa-check"></i>
+        محصول به سبد خرید اضافه شد
+    </div>
+</div>
+
+<div id="modal_login" class="modal">
+    <div class="modal-content">
+        <div class="form-login-moboland">
+            <span class="close_login"><i class="fa-solid fa-xmark"></i></span>
+
+            <div class="logo">
+                <a href="/">
+                    <img src="/wp-content/uploads/2024/11/logo-web.webp" alt="لوگوی اصلی وب سایت">
+                </a>
+            </div>
+
+            <form method="post" class="woocommerce-form woocommerce-form-register register register-form">
+                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                    <input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="reg_username" autocomplete="username" required placeholder="نام کاربری" />
+                </p>
+                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                    <input type="email" class="woocommerce-Input woocommerce-Input--text input-text" name="email" id="reg_email" autocomplete="email" required placeholder="آدرس ایمیل" />
+                </p>
+                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                    <input type="password" class="woocommerce-Input woocommerce-Input--text input-text" name="password" id="reg_password" autocomplete="new-password" required placeholder="رمز عبور" />
+                </p>
+                <div class="woocommerce-privacy-policy-text">
+                    <p>اطلاعات شخصی شما برای پردازش سفارش شما استفاده می‌شود.</p>
+                </div>
+                <p class="woocommerce-form-row form-row">
+                    <button type="submit" class="woocommerce-Button woocommerce-button button woocommerce-form-register__submit" name="register" value="عضویت">عضویت</button>
+                </p>
+                <p class="message">حساب کاربری دارید؟ <a href="#">وارد شوید</a></p>
+            </form>
+
+            <form class="woocommerce-form woocommerce-form-login login login-form" method="post">
+                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                    <input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="username" autocomplete="username" required placeholder="آدرس ایمیل" />
+                </p>
+                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+                    <input class="woocommerce-Input woocommerce-Input--text input-text" type="password" name="password" id="password" autocomplete="current-password" required placeholder="رمز عبور" />
+                </p>
+                <p class="form-row">
+                    <label class="woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme">
+                        <input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" id="rememberme" value="forever" />
+                        <span>مرا به خاطر بسپار</span>
+                    </label>
+                    <button type="submit" class="woocommerce-button button woocommerce-form-login__submit" name="login" value="ورود">ورود</button>
+                </p>
+                <p class="woocommerce-LostPassword lost_password">
+                    <a href="#">گذرواژه خود را فراموش کرده اید؟</a>
+                </p>
+                <p class="message">کاربر جدید هستید؟ <a href="#">ثبت نام</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="overlay"></div>

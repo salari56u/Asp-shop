@@ -79,7 +79,7 @@ namespace DigiStore.Controllers
             {
                 new Claim(ClaimTypes.Name, mobile),
                 new Claim(ClaimTypes.MobilePhone, mobile),
-                new Claim(ClaimTypes.Role, "Customer") // فعلا نقش مشتری
+                new Claim(ClaimTypes.Role, "Customer") 
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
