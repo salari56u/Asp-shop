@@ -25,6 +25,9 @@ namespace DigiStore.Data
 
         public DbSet<UserRole> UserRoles { get; set; }
 
+        public DbSet<Slider> Sliders { get; set; }
+        public DbSet<Banner> Banners { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

@@ -1,0 +1,65 @@
+﻿@using DigiStore.Models
+@model List<Product>
+<div class="elementor-element elementor-element-ec43c6e e-con-full e-flex e-con e-parent" data-id="ec43c6e" data-element_type="container">
+    <div class="elementor-element elementor-element-95308d0 elementor-widget elementor-widget-moboland_product_widget" data-id="95308d0" data-element_type="widget" data-widget_type="moboland_product_widget.default">
+        <div class="elementor-widget-container">
+
+            <section class="main-product">
+                <div class="container">
+                    <header class="title-product">
+                        <h4>
+                            <a target="_blank" rel="nofollow" href="shop/index.html">لپ تاپ</a>
+                        </h4>
+                        <div class="show-all">
+                            <a target="_blank" rel="nofollow" href="shop/index.html">
+                                <i class="fa-solid fa-circle-chevron-left"></i>
+                                مشاهده همه
+                            </a>
+                        </div>
+                    </header>
+                    <div class="owl-carousel owl-theme slider-product">
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <partial name="Components/_ProductCard" model="item" />
+                            }
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <script>
+                var $ = jQuery;
+
+                $(function () {
+                    $('.slider-product').owlCarousel({
+                        loop: false,
+                        margin: 10,
+                        nav: true,
+                        rtl: true,
+                        navText: "",
+                        dots: false,
+                        responsive: {
+                            0: {
+                                items: 1
+                            },
+                            576: {
+                                items: 2
+                            },
+                            768: {
+                                items: 3
+                            },
+                            992: {
+                                items: 4
+                            },
+                            1200: {
+                                items: 5                        }
+                        }
+                    })
+                })
+            </script>
+
+        </div>
+    </div>
+</div>

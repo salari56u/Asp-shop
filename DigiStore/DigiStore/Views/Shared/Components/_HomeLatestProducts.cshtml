@@ -1,0 +1,64 @@
+﻿@using DigiStore.Models
+@model List<Product>
+<div class="elementor-element elementor-element-2640902 e-flex e-con-boxed e-con e-parent" data-id="2640902" data-element_type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+    <div class="e-con-inner">
+        <div class="elementor-element elementor-element-ec2a99d elementor-widget elementor-widget-moboland_product_widget_style2" data-id="ec2a99d" data-element_type="widget" data-widget_type="moboland_product_widget_style2.default">
+            <div class="elementor-widget-container">
+
+                <section class="single-cat">
+                    <header class="title-single-cat">
+                        <h4>
+                            <a href="shop/index.html">جدیدترین محصولات موبولند</a>
+                        </h4>
+                        <div class="show-all">
+                            <a href="shop/index.html">
+                                <i class="fa-solid fa-circle-chevron-left"></i>
+                                مشاهده همه
+                            </a>
+                        </div>
+                    </header>
+                    <div class="single-cat-ch">
+                        <div class="single-cat-right">
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach(var product in Model)
+                                {
+                                    <div class="item single-cat-item">
+                                        <div class="single-cat-item-img">
+                                            <figure>
+                                                <a href="#">
+
+                                                    <img decoding="async"
+                                                         src="/wp-content/uploads/2025/01/@(product.MainImageName)"
+                                                         alt="@(product.Title)" />
+                                                </a>
+                                                <i class="fa-regular fa-eye"></i>
+                                            </figure>
+                                        </div>
+                                        <div class="single-cat-item-detail">
+                                            <h2>
+                                                <a href="#"
+                                                   target="_blank">@product.Title</a>
+                                            </h2>
+                                            <div class="price">
+
+                                                <span class="woocommerce-Price-amount amount"><bdi>@product.Price.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <div class="single-cat-left">
+                            <figure>
+
+                                <img decoding="async" src="/wp-content/themes/moboland/img/mobile-banner.webp" alt="">
+                            </figure>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+</div>

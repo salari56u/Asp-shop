@@ -31,46 +31,113 @@
                 </a>
             </div>
 
-            <form method="post" class="woocommerce-form woocommerce-form-register register register-form">
+            <div id="step-1-mobile">
                 <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="reg_username" autocomplete="username" required placeholder="نام کاربری" />
+                    <label>شماره موبایل خود را وارد کنید:</label>
+                    <input type="tel" class="woocommerce-Input woocommerce-Input--text input-text"
+                           id="login_mobile" placeholder="09xxxxxxxxx" style="text-align:center; letter-spacing: 2px;" />
                 </p>
-                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <input type="email" class="woocommerce-Input woocommerce-Input--text input-text" name="email" id="reg_email" autocomplete="email" required placeholder="آدرس ایمیل" />
-                </p>
-                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <input type="password" class="woocommerce-Input woocommerce-Input--text input-text" name="password" id="reg_password" autocomplete="new-password" required placeholder="رمز عبور" />
-                </p>
-                <div class="woocommerce-privacy-policy-text">
-                    <p>اطلاعات شخصی شما برای پردازش سفارش شما استفاده می‌شود.</p>
-                </div>
                 <p class="woocommerce-form-row form-row">
-                    <button type="submit" class="woocommerce-Button woocommerce-button button woocommerce-form-register__submit" name="register" value="عضویت">عضویت</button>
+                    <button type="button" onclick="sendOtp()" class="woocommerce-Button button" id="btn-send-otp">
+                        دریافت کد تایید
+                    </button>
                 </p>
-                <p class="message">حساب کاربری دارید؟ <a href="#">وارد شوید</a></p>
-            </form>
+            </div>
 
-            <form class="woocommerce-form woocommerce-form-login login login-form" method="post">
+            <div id="step-2-code" style="display:none;">
                 <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="username" autocomplete="username" required placeholder="آدرس ایمیل" />
+                    <label>کد ارسال شده به <span id="mobile-display" style="font-weight:bold"></span> را وارد کنید:</label>
+                    <input type="text" class="woocommerce-Input input-text"
+                           id="login_code" placeholder="----" maxlength="4" style="text-align:center; letter-spacing: 5px; font-size: 20px;" />
                 </p>
-                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <input class="woocommerce-Input woocommerce-Input--text input-text" type="password" name="password" id="password" autocomplete="current-password" required placeholder="رمز عبور" />
+                <p class="woocommerce-form-row form-row">
+                    <button type="button" onclick="verifyOtp()" class="woocommerce-Button button" id="btn-verify-otp">
+                        ورود به حساب
+                    </button>
                 </p>
-                <p class="form-row">
-                    <label class="woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme">
-                        <input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" id="rememberme" value="forever" />
-                        <span>مرا به خاطر بسپار</span>
-                    </label>
-                    <button type="submit" class="woocommerce-button button woocommerce-form-login__submit" name="login" value="ورود">ورود</button>
+                <p class="message" style="margin-top:10px;">
+                    <a href="#" onclick="resetLogin()">تغییر شماره موبایل</a>
                 </p>
-                <p class="woocommerce-LostPassword lost_password">
-                    <a href="#">گذرواژه خود را فراموش کرده اید؟</a>
-                </p>
-                <p class="message">کاربر جدید هستید؟ <a href="#">ثبت نام</a></p>
-            </form>
+            </div>
+
+            <div id="login-message" style="margin-top: 15px; text-align: center; color: red;"></div>
+
         </div>
     </div>
 </div>
+
+<div class="overlay"></div>
+
+<script>
+    function sendOtp() {
+        var mobile = $('#login_mobile').val();
+
+        // اعتبار سنجی ساده
+        if (mobile.length !== 11 || !mobile.startsWith("09")) {
+            $('#login-message').text("شماره موبایل معتبر نیست.");
+            return;
+        }
+
+        $('#btn-send-otp').text('در حال ارسال...').prop('disabled', true);
+
+        $.ajax({
+            url: '/Account/SendOtp',
+            type: 'POST',
+            data: { phoneNumber: mobile },
+            success: function (response) {
+                if (response.success) {
+                    // تغییر به مرحله دوم
+                    $('#step-1-mobile').slideUp();
+                    $('#step-2-code').slideDown();
+                    $('#mobile-display').text(mobile);
+                    $('#login-message').text("").css('color', 'green');
+                } else {
+                    $('#login-message').text(response.message).css('color', 'red');
+                    $('#btn-send-otp').text('دریافت کد تایید').prop('disabled', false);
+                }
+            },
+            error: function () {
+                $('#login-message').text("خطا در ارتباط با سرور").css('color', 'red');
+                $('#btn-send-otp').text('دریافت کد تایید').prop('disabled', false);
+            }
+        });
+    }
+
+    function verifyOtp() {
+        var mobile = $('#login_mobile').val();
+        var code = $('#login_code').val();
+
+        if (code.length < 4) {
+            $('#login-message').text("کد تایید کامل نیست").css('color', 'red');
+            return;
+        }
+
+        $('#btn-verify-otp').text('در حال بررسی...').prop('disabled', true);
+
+        $.ajax({
+            url: '/Account/VerifyOtp',
+            type: 'POST',
+            data: { phoneNumber: mobile, code: code },
+            success: function (response) {
+                if (response.success) {
+                    $('#login-message').text("ورود موفقیت آمیز!").css('color', 'green');
+                    // رفرش صفحه برای اعمال لاگین
+                    location.reload();
+                } else {
+                    $('#login-message').text(response.message).css('color', 'red');
+                    $('#btn-verify-otp').text('ورود به حساب').prop('disabled', false);
+                }
+            }
+        });
+    }
+
+    function resetLogin() {
+        $('#step-2-code').slideUp();
+        $('#step-1-mobile').slideDown();
+        $('#btn-send-otp').text('دریافت کد تایید').prop('disabled', false);
+        $('#login_code').val('');
+        $('#login-message').text('');
+    }
+</script>
 
 <div class="overlay"></div>

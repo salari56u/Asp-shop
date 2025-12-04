@@ -288,10 +288,20 @@
 				</nav>
 
 
-				<div class="register-btn" id="btn_modal_login">
-					<i class="far fa-circle-user"></i>
-					<span>ورود/ثبت نام</span>
-				</div>
+				@if (User.Identity.IsAuthenticated)
+				{
+					<div class="register-btn" style="border: 1px solid #2ecc71; color: #2ecc71;">
+						<i class="far fa-user"></i>
+						<span>@User.Identity.Name</span> <a href="/Account/Logout" style="margin-right: 10px; font-size: 12px; color: red;">(خروج)</a>
+					</div>
+				}
+				else
+				{
+					<div class="register-btn" id="btn_modal_login">
+						<i class="far fa-circle-user"></i>
+						<span>ورود/ثبت نام</span>
+					</div>
+				}
 			</div>
 		</div>
 	</section>

@@ -9,6 +9,16 @@ public class Product
     public string Description { get; set; }
     public decimal Price { get; set; }
     public int Stock { get; set; }
+
+
+    public decimal? OldPrice { get; set; }
+
+    public string? MainImageName { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+
+
     public ICollection<ProductImage> Images { get; set; }
     public ICollection<ProductSpecification> Specifications { get; set; }
     public ICollection<ProductCategory> ProductCategories { get; set; }

@@ -1,0 +1,88 @@
+﻿@using DigiStore.Models
+@model List<Category>
+
+<div class="elementor-element elementor-element-c99bfcb e-con-full e-flex e-con e-parent" data-id="c99bfcb" data-element_type="container">
+    <div class="elementor-element elementor-element-65afe5b elementor-widget elementor-widget-category_slider_widget" data-id="65afe5b" data-element_type="widget" data-widget_type="category_slider_widget.default">
+        <div class="elementor-widget-container">
+
+
+            <section class="product-cat-home">
+                <div class="container">
+                    <div class="product-cat">
+                        <div class="owl-carousel owl-theme product-cat-slider">
+                            @if(Model !=null)
+                            {
+                                foreach(var cat in Model)
+                                {
+                                    <div class="item product-cat-item">
+                                        <figure>
+                                            <a href="#">
+                                                <img decoding="async"
+                                                     src="/wp-content/uploads/2025/01/@cat.ImageName"
+                                                     alt="" @cat.Title>
+                                            </a>
+                                        </figure>
+                                        <a href="#" class="btn-text">
+                                            @cat.Title
+                                        </a>
+                                        <div class="item-action">
+                                            <a href="#">
+                                                <button>
+                                                    <i class="fa-solid fa-circle-plus"></i>
+                                                    <span>مشاهده</span>
+                                                </button>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <script>
+                var $ = jQuery;
+
+                $(function () {
+                    $('.product-cat-slider').owlCarousel({
+                        loop: true,
+                        stagePadding : 20,
+                        autoplay:false,
+                        margin: 10,
+                        nav: true,
+                        rtl: true,
+                        navText: "",
+                        dots: false,
+                        responsive: {
+                            0: {
+                                items: 2
+                            },
+                            500: {
+                                items: 2
+                            },
+                            576: {
+                                items: 2
+                            },
+                            768: {
+                                items: 4
+                            },
+                            992: {
+                                items: 5                        },
+                            1000: {
+                                items: 7
+                            },
+                            1400: {
+                                items: 9                        }
+                        }
+                    })
+                })
+
+            </script>
+
+
+        </div>
+    </div>
+</div>

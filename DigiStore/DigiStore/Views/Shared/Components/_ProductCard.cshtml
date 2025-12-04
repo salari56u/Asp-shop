@@ -1,0 +1,56 @@
+﻿@using DigiStore.Models
+@model Product
+
+<div class="item product-item">
+    <figure>
+        <a href="#">
+            <img decoding="async" class="product-image-main"
+                 src="/wp-content/uploads/2025/01/@Model.MainImageName"
+                 alt="@Model.Title">
+
+            <img decoding="async" class="product-image-hover"
+                 src="/wp-content/uploads/2025/01/@Model.MainImageName"
+                 alt="@Model.Title">
+        </a>
+    </figure>
+
+    <h2>
+        <a href="#" target="_blank">@Model.Title</a>
+    </h2>
+
+    <div class="color-dis">
+        <div class="color-attr">
+        </div>
+
+        @if (Model.OldPrice.HasValue && Model.OldPrice > Model.Price)
+        {
+            var discountPercent = Math.Round((1 - (Model.Price / Model.OldPrice.Value)) * 100);
+            <div class="discount">%@discountPercent</div>
+        }
+    </div>
+
+    <div class="down-product">
+        <div class="addtocart-button">
+            <a href="#" class="button product_type_simple add_to_cart_button">
+                <i class="fa-solid fa-circle-plus"></i>
+            </a>
+        </div>
+
+        <div class="price">
+            @if (Model.OldPrice.HasValue)
+            {
+                <del aria-hidden="true">
+                    <span class="woocommerce-Price-amount amount">
+                        @Model.OldPrice.Value.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span>
+                    </span>
+                </del>
+            }
+
+            <ins aria-hidden="true" style="text-decoration: none;">
+                <span class="woocommerce-Price-amount amount">
+                    @Model.Price.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span>
+                </span>
+            </ins>
+        </div>
+    </div>
+</div>
