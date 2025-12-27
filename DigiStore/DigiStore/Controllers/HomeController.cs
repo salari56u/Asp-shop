@@ -22,61 +22,60 @@ namespace DigiStore.Controllers
 
         public async Task<IActionResult> Index()
         {
-             var vm=new HomeViewModel();
+            var vm = new HomeViewModel();
 
-
-            //بخش اسلایدر
-            vm.Sliders=await _context.Sliders
-                .Where(s=>s.IsActive)
-                .OrderBy(s=>s.SortOrder)
+            vm.Sliders = await _context.Sliders
+                .AsNoTracking()
+                .Where(s => s.IsActive)
+                .OrderBy(s => s.SortOrder)
                 .ToListAsync();
 
-            //بخش کتگوری ها
+            
             vm.Categories = await _context.Categories
+                .AsNoTracking()
                 .ToListAsync();
 
-
-            //بخش موبایل --فعلا بر اساس فیلتر میکنم چون هنوز دسته بندی درختی ندارم
             vm.MobileProducts = await _context.Products
-                .Where(p => p.Title.Contains("گوشی") || p.Title.Contains("موبایل"))
-                .OrderBy(p => p.CreatedAt)
+                .AsNoTracking()
+                .Where(p => p.ProductCategories.Any(pc => pc.CategoryId == 12))
+                .OrderByDescending(p => p.CreatedAt) 
                 .Take(8)
                 .ToListAsync();
 
-            //دریافت لوازم جانبی 
-            vm.AccessoryProducts=await _context.Products
-                .Where(p => p.Title.Contains("هدفون") || p.Title.Contains("ساعت") || p.Title.Contains("پاوربانک") || p.Title.Contains("شارژر") || p.Title.Contains("دسته بازی"))
+            
+            vm.LaptopProducts = await _context.Products
+                .AsNoTracking()
+                .Where(p => p.ProductCategories.Any(pc => pc.CategoryId == 11))
                 .OrderByDescending(p => p.CreatedAt)
                 .Take(8)
                 .ToListAsync();
 
+            
+            var accessoryIds = new List<int> { 14, 15, 17, 18, 20 };
 
-
-            // بخش لپ تاپ ها
-
-            vm.LaptopProducts = await _context.Products
-                .Where(p => p.Title.Contains("لپ تاپ"))
-                .OrderBy(p => p.CreatedAt)
+            vm.AccessoryProducts = await _context.Products
+                .AsNoTracking()
+                .Where(p => p.ProductCategories.Any(pc => accessoryIds.Contains(pc.CategoryId)))
+                .OrderByDescending(p => p.CreatedAt)
                 .Take(8)
                 .ToListAsync();
 
-            //  دریافت پرفروش‌ها (فعلا ۱۰ محصول آخر رو می‌گیرم)
             vm.BestSellingProducts = await _context.Products
+                .AsNoTracking()
                 .OrderByDescending(p => p.CreatedAt)
                 .Take(10)
                 .ToListAsync();
 
 
-            //بخش اخرین محصولات
             vm.LatestProducts = await _context.Products
-                                       .OrderByDescending(p => p.CreatedAt)
-                                       .Take(6)
-                                       .ToListAsync();
+                .AsNoTracking()
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(6)
+                .ToListAsync();
 
-            //دریافت بنر
             vm.WideBanner = await _context.Banners
+                .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Position == "CenterWide" && b.IsActive);
-
 
             return View(vm);
         }

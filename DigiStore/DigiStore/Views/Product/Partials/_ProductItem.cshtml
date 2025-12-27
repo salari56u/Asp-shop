@@ -1,0 +1,67 @@
+﻿@model Product
+@{
+    string imagePath = "/wp-content/uploads/2025/01/";
+    // تصویر اصلی
+    string mainImg = imagePath + Model.MainImageName;
+    // تصویر دوم برای هاور (اگر در گالری عکسی باشد، اولی را برمی‌دارد، وگرنه همان عکس اصلی)
+    var galleryImg = Model.Images != null && Model.Images.Any()
+                     ? imagePath + Model.Images.First().Url
+                     : mainImg;
+}
+
+<div class="product-item">
+    <figure>
+        <a href="/Product/Details/@Model.Id">
+            <img class="product-image-main" src="@mainImg" alt="@Model.Title">
+            <img class="product-image-hover" src="@galleryImg" alt="@Model.Title">
+        </a>
+    </figure>
+
+    <h2>
+        <a href="/Product/Details/@Model.Id" target="_blank">@Model.Title</a>
+    </h2>
+
+    <div class="color-dis">
+        <!-- نمایش دایره‌های رنگی (اگر دیتایی دارید) -->
+        <div class="color-attr">
+            <ul>
+                <!-- اینجا می‌توانید بر اساس مشخصات محصول رنگ‌ها را رندر کنید -->
+                <li><span style="background: #000000"><b>مشکی</b></span></li>
+            </ul>
+        </div>
+
+        @if (Model.OldPrice.HasValue && Model.OldPrice > Model.Price)
+        {
+            // محاسبه درصد تخفیف
+            var discount = (int)((Model.OldPrice.Value - Model.Price) / Model.OldPrice.Value * 100);
+            <div class="discount">%@discount</div>
+        }
+    </div>
+
+    <div class="down-product">
+        <div class="addtocart-button">
+            <!-- لینک افزودن به سبد خرید -->
+            <form method="post" action="/Cart/Add" style="display:inline;">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <button type="submit" class="button product_type_variable add_to_cart_button" style="background:none; border:none; padding:0;">
+                    <i class="fa-solid fa-circle-plus" style="font-size: 28px; color: #ef394e;"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="price">
+            @if (Model.OldPrice.HasValue && Model.OldPrice > Model.Price)
+            {
+                <del aria-hidden="true">
+                    <span class="woocommerce-Price-amount amount">
+                        <bdi>@Model.OldPrice.Value.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi>
+                    </span>
+                </del>
+                <br />
+            }
+            <span class="woocommerce-Price-amount amount">
+                <bdi>@Model.Price.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi>
+            </span>
+        </div>
+    </div>
+</div>

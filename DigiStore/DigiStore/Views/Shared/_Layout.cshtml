@@ -28,6 +28,7 @@
     <script src="/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.mind3a6.js"></script>
     <script src="/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.mind3a6.js"></script>
 
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="rtl home wp-singular page-template page-template-elementor_header_footer page page-id-247 wp-theme-moboland theme-moboland woocommerce-no-js woo-variation-swatches wvs-behavior-blur wvs-theme-moboland wvs-show-label wvs-tooltip elementor-default elementor-template-full-width elementor-kit-244 elementor-page elementor-page-247">
 
@@ -42,7 +43,6 @@
     <partial name="_Footer" />
 
     <partial name="_Scripts" />
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
