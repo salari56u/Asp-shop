@@ -23,6 +23,8 @@ namespace DigiStore.Data
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
 
+        public DbSet<ProductFeature> ProductFeatures { get; set; }
+
         public DbSet<UserRole> UserRoles { get; set; }
 
         public DbSet<Slider> Sliders { get; set; }

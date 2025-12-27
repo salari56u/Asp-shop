@@ -1,0 +1,11 @@
+﻿@model Product
+@{
+    var categoryName = Model.ProductCategories?.FirstOrDefault()?.Category?.Title ?? "فروشگاه";
+}
+<!-- نان ریزه -->
+<nav class="breadcrumb-wrap">
+    <a href="/">خانه</a> /
+    <a href="#">محصولات</a> /
+    <a href="#">@categoryName</a> /
+    <span>@Model.Title</span>
+</nav>

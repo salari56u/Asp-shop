@@ -1,0 +1,63 @@
+﻿@model Product
+<!-- بخش جزئیات (سمت چپ) -->
+<div class="product-details">
+    <h1 class="product-title">@Model.Title</h1>
+    <span class="sku-code">Code: @Model.Id</span>
+
+    <div class="specs-list">
+        @if (Model.Specifications != null && Model.Specifications.Any())
+        {
+            foreach (var spec in Model.Specifications.Take(5))
+            {
+                <div class="spec-item">
+                    <i class="fa-solid fa-circle"></i>
+                    <span class="spec-key">@spec.Key :</span>
+                    <span class="spec-val">@spec.Value</span>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- باکس خرید اصلاح شده (بدون مثبت/منفی) -->
+    <form method="post">
+        <!-- ارسال یک عدد مخفی به عنوان تعداد پیش‌فرض -->
+        <input type="hidden" name="quantity" value="1" />
+
+        <div class="buy-box">
+            <div class="price-row">
+                @if (Model.OldPrice.HasValue && Model.OldPrice > Model.Price)
+                {
+                    <span class="old-price">@Model.OldPrice.Value.ToString("N0")</span>
+                }
+                <span class="current-price">
+                    @Model.Price.ToString("N0") <span class="currency">تومان</span>
+                </span>
+            </div>
+
+            @if (Model.Stock > 0)
+            {
+                <button type="submit" class="add-to-cart-btn">
+                    افزودن به سبد خرید
+                </button>
+            }
+            else
+            {
+                <button type="button" class="add-to-cart-btn" disabled style="background:#aab2bd;">
+                    ناموجود
+                </button>
+            }
+        </div>
+    </form>
+
+    <div class="features-row">
+        <div class="feature-box">
+            <i class="fa-solid fa-truck-fast fa-lg mb-2 text-primary"></i><br>ارسال سریع
+        </div>
+        <div class="feature-box">
+            <i class="fa-solid fa-shield-halved fa-lg mb-2 text-success"></i><br>ضمانت اصالت
+        </div>
+        <div class="feature-box">
+            <i class="fa-solid fa-headset fa-lg mb-2 text-warning"></i><br>پشتیبانی
+        </div>
+    </div>
+</div>

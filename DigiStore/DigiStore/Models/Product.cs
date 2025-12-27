@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewEngines;
+﻿using DigiStore.Models;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using System.Collections.Generic;
 
 public class Product
@@ -23,4 +24,5 @@ public class Product
     public ICollection<ProductSpecification> Specifications { get; set; }
     public ICollection<ProductCategory> ProductCategories { get; set; }
     public ICollection<Review> Reviews { get; set; }
+
 }

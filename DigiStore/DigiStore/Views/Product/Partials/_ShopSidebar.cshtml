@@ -1,0 +1,67 @@
+﻿@model ShopViewModel
+
+<aside class="side-single-shop-page">
+
+    <!-- ویجت جستجو -->
+    <div id="search-3" class="widget_search widget">
+        <div class="widget-shop">
+            <div class="widget-header"><h3>جستجو</h3></div>
+            <form role="search" method="get" class="searchform" action="/Product/Index">
+                <div>
+                    <label class="screen-reader-text" for="s">جستجو برای:</label>
+                    <!-- حفظ فیلترهای دیگر هنگام جستجو -->
+                    @if (Model.CategoryId.HasValue)
+                    {
+                        <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                    }
+                    <input type="text" value="@Model.Search" name="search" id="s" placeholder="نام محصول..." />
+                    <input type="submit" id="searchsubmit" value="جستجو" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ویجت فیلتر قیمت -->
+    <div class="woocommerce widget_price_filter widget">
+        <div class="widget-shop">
+            <div class="widget-header"><h3>فیلتر براساس قیمت</h3></div>
+            <form method="get" action="/Product/Index">
+                <!-- حفظ فیلترهای دیگر -->
+                @if (!string.IsNullOrEmpty(Model.Search))
+                {
+                    <input type="hidden" name="search" value="@Model.Search" />
+                }
+                @if (Model.CategoryId.HasValue)
+                {
+                    <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                }
+
+                <div class="price_slider_wrapper">
+                    <div class="price_slider_amount" style="display:flex; flex-direction:column; gap:10px;">
+                        <input type="number" name="minPrice" value="@Model.MinPrice" placeholder="حداقل قیمت (تومان)" style="width:100%; padding:8px;" />
+                        <input type="number" name="maxPrice" value="@Model.MaxPrice" placeholder="حداکثر قیمت (تومان)" style="width:100%; padding:8px;" />
+                        <button type="submit" class="button">صافی</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ویجت دسته‌بندی -->
+    <div class="woocommerce widget_product_categories widget">
+        <div class="widget-shop">
+            <div class="widget-header"><h3>دسته بندی محصولات</h3></div>
+            <ul class="product-categories">
+                <li><a href="/Product/Index">همه محصولات</a></li>
+                @foreach (var cat in Model.Categories.Where(c => c.ParentCategoryId == null))
+                {
+                    <li class="cat-item @(Model.CategoryId == cat.Id ? "current-cat" : "")">
+                        <!-- به قسمت data-id دقت کن -->
+                        <a href="javascript:void(0)" data-id="@cat.Id">@cat.Title</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+</aside>

@@ -1,0 +1,174 @@
+﻿@model ShopViewModel
+@{
+    ViewData["Title"] = "فروشگاه";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <link href="~/css/product-Index.css" rel="stylesheet" asp-append-version="true" />
+}
+
+<div class="container">
+    <div class="woocommerce-notices-wrapper"></div>
+
+    <nav class="woocommerce-breadcrumb" aria-label="Breadcrumb">
+        <a href="/">خانه</a>&nbsp;&#47;&nbsp;فروشگاه
+    </nav>
+
+    <div class="close-menu-responsive-page-moboland"></div>
+
+    <section class="hero-single">
+
+        <!-- 1. فراخوانی سایدبار -->
+        <partial name="Partials/_ShopSidebar" model="Model" />
+
+        <div class="main-single">
+
+            <!-- بخش مرتب‌سازی و آمار -->
+            <div class="before-shop">
+                <p class="woocommerce-result-count">
+                    <!-- نمایش آمار حدودی -->
+                    نمایش @Model.Products.Count محصول
+                </p>
+
+                <div class="desktop-moboland">
+                    <form class="woocommerce-ordering" method="get">
+                        <!-- حفظ فیلترهای دیگر هنگام تغییر مرتب‌سازی -->
+                        @if (!string.IsNullOrEmpty(Model.Search))
+                        {
+                            <input type="hidden" name="search" value="@Model.Search" />
+                        }
+                        @if (Model.CategoryId.HasValue)
+                        {
+                            <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                        }
+
+                        <ul class="catalog-list">
+                            <i class="fa-solid fa-chart-column"></i>
+                            <span>مرتب سازی بر اساس : </span>
+
+                            <li class="list-inline-item @(Model.SortBy == "date" ? "active" : "")">
+                                <a href="javascript:void(0)" onclick="setSort('date')">جدیدترین</a>
+                            </li>
+                            <li class="list-inline-item @(Model.SortBy == "price" ? "active" : "")">
+                                <a href="javascript:void(0)" onclick="setSort('price')">ارزان‌ترین</a>
+                            </li>
+                            <li class="list-inline-item @(Model.SortBy == "price-desc" ? "active" : "")">
+                                <a href="javascript:void(0)" onclick="setSort('price-desc')">گران‌ترین</a>
+                            </li>
+                        </ul>
+                        <!-- اینپوت مخفی برای نگهداری مقدار مرتب‌سازی فعلی -->
+                        <input type="hidden" id="sort-select" name="sortBy" value="@Model.SortBy" />
+                    </form>
+                </div>
+
+                <div class="mobile-moboland filter-shop-page">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>فیلترهای محصولات</span>
+                </div>
+            </div>
+
+            <!-- 2. لیست محصولات (گرید) + صفحه‌بندی -->
+            <!-- اصلاح مهم: حذف foreach و ارسال کل مدل به پارشیال -->
+            <partial name="Partials/_ProductGrid" model="Model" />
+
+            <!-- اینپوت مخفی برای دسته‌بندی جهت استفاده در JS -->
+            <input type="hidden" id="hidden-cat-id" value="@Model.CategoryId" />
+
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        // *** خط زیر بسیار مهم است: jQuery را میگیرد و به عنوان $ به داخل تابع میفرستد ***
+        jQuery(document).ready(function ($) {
+
+            console.log("Shop Script Loaded with jQuery Version:", $.fn.jquery); // برای تست
+
+            let searchTimeout;
+
+            // تابع کمکی برای تغییر سورت
+            window.setSort = function(sortValue) { // window اضافه شد تا گلوبال شود
+                $('.catalog-list li').removeClass('active');
+                $('#sort-select').val(sortValue);
+                filterProducts(1);
+            }
+
+            // تابع اصلی فیلتر
+            window.filterProducts = function(page = 1) { // window اضافه شد
+                $('#grid-loader').fadeIn(200);
+                $('.main-product').css('opacity', '0.5');
+
+                const search = $('#s').val();
+                const minPrice = $('input[name="minPrice"]').val();
+                const maxPrice = $('input[name="maxPrice"]').val();
+                const categoryId = $('#hidden-cat-id').val();
+                const sortBy = $('#sort-select').val() || 'date';
+
+                const params = new URLSearchParams({
+                    search: search || '',
+                    minPrice: minPrice || '',
+                    maxPrice: maxPrice || '',
+                    categoryId: categoryId || '',
+                    sortBy: sortBy,
+                    page: page
+                });
+
+                const newUrl = `${window.location.pathname}?${params.toString()}`;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+
+                $.ajax({
+                    url: newUrl,
+                    type: 'GET',
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                    success: function (result) {
+                        $('#product-grid-container').replaceWith(result);
+                        $('.main-product').css('opacity', '1');
+                    },
+                    error: function () {
+                        alert('خطا در ارتباط با سرور.');
+                        $('.main-product').css('opacity', '1');
+                    }
+                });
+            }
+
+            // ایونت‌ها (Events)
+            // استفاده از document برای هندل کردن عناصر داینامیک
+
+            // 1. سرچ
+            $(document).on('input', '#s', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    filterProducts(1);
+                }, 500);
+            });
+
+            // 2. سابمیت فرم‌ها
+            $(document).on('submit', '.searchform, .widget_price_filter form', function (e) {
+                e.preventDefault();
+                filterProducts(1);
+            });
+
+            // 3. دکمه‌های صفحه‌بندی
+            $(document).on('click', '.ajax-page-link', function (e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                filterProducts(page);
+                $('html, body').animate({ scrollTop: $(".main-single").offset().top - 100 }, 500);
+            });
+
+            // 4. دسته‌بندی‌ها
+            $(document).on('click', '.product-categories a', function (e) {
+                // اگر لینک خالی نیست (مثلا # نیست)
+                if ($(this).attr('href') && $(this).attr('href') !== '#') {
+                    e.preventDefault();
+                    $('.product-categories li').removeClass('current-cat');
+                    $(this).parent().addClass('current-cat');
+                    const catId = $(this).data('id');
+                    $('#hidden-cat-id').val(catId);
+                    filterProducts(1);
+                }
+            });
+        });
+    </script>
+}
