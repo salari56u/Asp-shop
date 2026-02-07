@@ -1,0 +1,149 @@
+﻿@model ProductCreateViewModel
+@{
+    ViewBag.Title = "افزودن محصول جدید";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+    <div class="container-xl px-4">
+        <div class="page-header-content pt-4">
+            <h1 class="page-header-title">افزودن محصول جدید</h1>
+        </div>
+    </div>
+</header>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var item in ViewData.ModelState)
+        {
+            foreach (var error in item.Value.Errors)
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        }
+    </div>
+}
+
+<div class="container-xl px-4 mt-n10">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-body p-4">
+
+            @using (Html.BeginForm("Create", "Product", FormMethod.Post,
+                   new { enctype = "multipart/form-data", area = "Admin" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        @Html.ValidationSummary(true)
+                    </div>
+                }
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Title)
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Slug)
+                    @Html.TextBoxFor(m => m.Slug, new { @class = "form-control" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Description)
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4 })
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        @Html.LabelFor(m => m.Price)
+                        @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        @Html.LabelFor(m => m.OldPrice)
+                        @Html.TextBoxFor(m => m.OldPrice, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        @Html.LabelFor(m => m.Stock)
+                        @Html.TextBoxFor(m => m.Stock, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    @Html.Label("MainImage", "تصویر اصلی محصول")
+                    <input type="file" name="MainImage" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label>تصاویر گالری محصول</label>
+                    <input type="file" name="GalleryImages" multiple class="form-control" />
+                    <small class="text-muted">می‌توانید چند تصویر انتخاب کنید</small>
+                </div>
+
+                <div class="mb-3">
+                    <label>دسته‌بندی‌ها</label>
+                    <select name="SelectedCategories" multiple class="form-control">
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat.Id">@cat.Title</option>
+                        }
+                    </select>
+                </div>
+
+
+                <div class="mb-3">
+                    <label>مشخصات فنی</label>
+                    <div id="specContainer">
+                        <div class="row mb-2">
+                            <div class="col-md-5">
+                                <input type="text" name="SpecKeys" class="form-control" placeholder="مثلا: رنگ" />
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" name="SpecValues" class="form-control" placeholder="مثلا: مشکی" />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger" onclick="removeSpec(this)">×</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-sm btn-success mt-2" onclick="addSpec()">افزودن مشخصه</button>
+                </div>
+
+
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">ذخیره محصول</button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+@section Scripts{
+<script>
+    function addSpec() {
+        const row = `
+        <div class="row mb-2">
+            <div class="col-md-5">
+                <input type="text" name="SpecKeys" class="form-control" placeholder="مثلا: وزن" />
+            </div>
+            <div class="col-md-5">
+                <input type="text" name="SpecValues" class="form-control" placeholder="مثلا: ۲ کیلو" />
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger" onclick="removeSpec(this)">×</button>
+            </div>
+        </div>`;
+        document.getElementById("specContainer").insertAdjacentHTML("beforeend", row);
+    }
+
+    function removeSpec(btn) {
+        btn.closest(".row").remove();
+    }
+</script>
+
+}

@@ -1,0 +1,78 @@
+﻿@model DigiStore.Models.ViewModels.UserEditViewModel
+@{
+    ViewBag.Title = "ویرایش کاربر";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+    <div class="container-xl px-4">
+        <div class="page-header-content pt-4">
+            <h1 class="page-header-title">ویرایش کاربر: @Model.UserName</h1>
+        </div>
+    </div>
+</header>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var item in ViewData.ModelState)
+        {
+            foreach (var error in item.Value.Errors)
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        }
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @Html.ValidationSummary(false) 
+    </div>
+}
+
+<div class="card shadow-lg border-0 rounded-lg mt-4">
+    <div class="card-body p-4">
+
+        @using (Html.BeginForm("Edit", "Users", new { area = "Admin" }, FormMethod.Post, true, new { @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.HiddenFor(m => m.Id)
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(m => m.UserName)
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "تغییر رمز (اختیاری)" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    @Html.LabelFor(m => m.RoleId)
+                    @Html.DropDownListFor(m => m.RoleId, ViewBag.Roles as SelectList, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.RoleId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">ثبت تغییرات</button>
+                <a href="@Url.Action("Index", "Users", new { area = "Admin" })" class="btn btn-secondary">بازگشت</a>
+            </div>
+        }
+    </div>
+</div>

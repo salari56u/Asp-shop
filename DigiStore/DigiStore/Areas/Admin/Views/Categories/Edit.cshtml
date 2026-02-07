@@ -1,0 +1,114 @@
+﻿@using DigiStore.Areas.Admin.Models
+@model CategoryModel
+
+@{
+    ViewBag.Title = "ویرایش دسته بندی: " + Model.Title;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@* Page Header *@
+<header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+    <div class="container-xl px-4">
+        <div class="page-header-content pt-4">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-auto mt-4">
+                    <h1 class="page-header-title">
+                        <div class="page-header-icon"><i class="bx bx-edit"></i></div>
+                        ویرایش دسته بندی
+                    </h1>
+                    <div class="page-header-subtitle">ویرایش اطلاعات برای "@Model.Title"</div>
+                </div>
+                <div class="col-auto mt-4">
+                    <a href="@Url.Action("Index")" class="btn btn-secondary shadow-sm">
+                        <i class="bx bx-arrow-back me-1"></i> بازگشت به لیست
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container-xl px-4 mt-n10">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header bg-transparent border-bottom-0 p-4">
+            <h5 class="mb-0">ویرایش اطلاعات</h5>
+        </div>
+        <div class="card-body p-4">
+
+            @* Form needs enctype for file upload *@
+            @using (Html.BeginForm("Edit", "Categories", FormMethod.Post, new { enctype = "multipart/form-data", area = "Admin" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.Id) @* REQUIRED for Edit *@
+                @* Hidden field to store the CURRENT image URL *@
+                @Html.HiddenFor(model => model. Id)
+                <div class="form-horizontal">
+                    @* Display validation errors summary *@
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>خطا!</strong> لطفا موارد زیر را بررسی کنید:
+                            @Html.ValidationSummary(true, "", new { @class = "small d-block mt-1" })
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            @ViewBag.ErrorMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+
+                    @* FullName *@
+                    <div class="mb-3 row">
+                        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "col-md-2 col-form-label text-md-end" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger small mt-1" })
+                        </div>
+                    </div>
+
+                    @* Profile Image Upload / Display Current *@
+                    <div class="mb-3 row align-items-center">
+                        @Html.Label("imageFile", "تصویر  جدید", htmlAttributes: new { @class = "col-md-2 col-form-label text-md-end" })
+                        <div class="col-md-5">
+                            @* Name MUST match controller parameter *@
+                            <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" />
+                            <div class="form-text">برای تغییر، تصویر جدید را انتخاب کنید. در غیر این صورت، این فیلد را خالی بگذارید.</div>
+                            @Html.ValidationMessage("ProfileImageUrl", "", new { @class = "text-danger small mt-1" }) @* Display upload-specific errors *@
+                        </div>
+                        <div class="col-md-5 text-center text-md-start">
+                            @* Display the CURRENT image *@
+                            @if (!string.IsNullOrEmpty(Model.ImageName))
+                            {
+                                <img src="@Url.Content("/wp-content/uploads/Categories/" + Model.ImageName)" alt="Current Profile" class="img-thumbnail mt-2 rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover;" />
+                                <span class="d-block small text-muted mt-1">تصویر فعلی</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted fst-italic">بدون تصویر</span>
+                            }
+                        </div>
+                    </div>
+
+                    @* Submit Button *@
+                    <div class="mb-3 row">
+                        <div class="col-md-10 offset-md-2">
+                            <button type="submit" class="btn btn-primary shadow-sm">
+                                <i class="bx bx-save me-1"></i> ذخیره تغییرات
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-secondary shadow-sm ms-2">
+                                <i class="bx bx-x me-1"></i> انصراف
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+ @* end using Html.BeginForm *@
+
+        </div> @* end card-body *@
+    </div> @* end card *@
+</div> @* end container *@
+

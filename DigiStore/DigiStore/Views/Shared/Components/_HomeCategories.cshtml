@@ -16,9 +16,9 @@
                                 {
                                     <div class="item product-cat-item">
                                         <figure>
-                                            <a href="#">
+                                            <a href="@Url.Action("Index", "Product", new { categoryId = cat.Id})">
                                                 <img decoding="async"
-                                                     src="/wp-content/uploads/2025/01/@cat.ImageName"
+                                                     src="/wp-content/uploads/Categories/@cat.ImageName"
                                                      alt="" @cat.Title>
                                             </a>
                                         </figure>

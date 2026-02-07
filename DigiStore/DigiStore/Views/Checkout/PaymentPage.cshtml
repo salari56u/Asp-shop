@@ -1,0 +1,307 @@
+﻿@model PaymentViewMode
+@{
+    ViewData["Title"] = "صفحه پرداخت";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white py-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h4 class="mb-0">
+                                <i class="bi bi-credit-card-2-front me-2"></i>
+                                تکمیل فرآیند خرید
+                            </h4>
+                            <small class="opacity-75">لطفا روش پرداخت را انتخاب نمایید</small>
+                        </div>
+                        <div class="badge bg-white text-primary fs-6 px-3 py-2">
+                            <i class="bi bi-shield-check me-1"></i>
+                            امن
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <div class="alert alert-info border-0 bg-light-info">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-geo-alt fs-4 text-info"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="alert-heading mb-2">آدرس تحویل سفارش</h6>
+                                <p class="mb-1">
+                                    <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                    آدرس شما با موفقیت انتخاب شد
+                                </p>
+                                <small class="text-muted">(شناسه آدرس: #@Model.SelectedAddressId)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-5">
+                        <h5 class="mb-4 border-bottom pb-3">
+                            <i class="bi bi-wallet2 me-2 text-primary"></i>
+                            انتخاب روش پرداخت
+                        </h5>
+
+                        <div class="payment-methods">
+                            <div class="form-check payment-option mb-3 active">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="walletPayment" checked>
+                                <label class="form-check-label w-100" for="walletPayment">
+                                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3 border bg-light">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-success bg-opacity-10 p-2 rounded me-3">
+                                                <i class="bi bi-wallet2 fs-4 text-success"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">پرداخت از کیف پول</h6>
+                                                <small class="text-muted">پرداخت سریع و امن از موجودی کیف پول</small>
+                                            </div>
+                                        </div>
+                                        <div class="badge bg-success">پیشنهادی</div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="form-check payment-option mb-3">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="gatewayPayment" disabled>
+                                <label class="form-check-label w-100" for="gatewayPayment">
+                                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3 border">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-secondary bg-opacity-10 p-2 rounded me-3">
+                                                <i class="bi bi-credit-card fs-4 text-secondary"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1 text-secondary">درگاه بانکی</h6>
+                                                <small class="text-muted">به زودی فعال خواهد شد</small>
+                                            </div>
+                                        </div>
+                                        <div class="badge bg-secondary">به زودی</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-5">
+                        <div class="col-md-6">
+                            <form method="post" action="/Checkout/payment" class="checkout woocommerce-checkout h-100">
+                                <input type="hidden" name="SelectedAddressId" value="@Model.SelectedAddressId" />
+
+                                <button type="submit" class="btn btn-success btn-lg w-100 h-100 py-3 shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-lock-fill fs-5 me-3"></i>
+                                        <div class="text-start">
+                                            <div class="fw-bold">پرداخت امن</div>
+                                            <small class="opacity-75">تکمیل خرید و پرداخت</small>
+                                        </div>
+                                    </div>
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="col-md-6">
+                            <form action="/Checkout/PaymentFailed" method="post" class="h-100">
+                                <button type="submit" class="btn btn-outline-danger btn-lg w-100 h-100 py-3">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-x-circle fs-5 me-3"></i>
+                                        <div class="text-start">
+                                            <div class="fw-bold">انصراف از خرید</div>
+                                            <small class="opacity-75">بازگشت به سبد خرید</small>
+                                        </div>
+                                    </div>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="mt-5 pt-4 border-top">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <div class="bg-light-primary p-3 rounded-circle d-inline-flex mb-2">
+                                        <i class="bi bi-shield-check fs-4 text-primary"></i>
+                                    </div>
+                                    <h6 class="mb-1">پرداخت امن</h6>
+                                    <small class="text-muted">SSL رمزگذاری شده</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <div class="bg-light-warning p-3 rounded-circle d-inline-flex mb-2">
+                                        <i class="bi bi-clock-history fs-4 text-warning"></i>
+                                    </div>
+                                    <h6 class="mb-1">پرداخت سریع</h6>
+                                    <small class="text-muted">کمتر از ۲ دقیقه</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <div class="bg-light-success p-3 rounded-circle d-inline-flex mb-2">
+                                        <i class="bi bi-headset fs-4 text-success"></i>
+                                    </div>
+                                    <h6 class="mb-1">پشتیبانی ۲۴/۷</h6>
+                                    <small class="text-muted">تماس با پشتیبانی</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> 
+                <div class="card-footer bg-light py-3">
+                    <div class="text-center">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            با کلیک بر روی پرداخت، موافقت خود با
+                            <a href="#" class="text-decoration-none">قوانین و مقررات</a>
+                            دیجی‌استور را اعلام می‌کنید.
+                        </small>
+                    </div>
+                </div>
+
+            </div> 
+            <div class="card border-0 shadow-sm rounded-4 mt-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-question-circle fs-3 text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-2">راهنمایی</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">
+                                    <i class="bi bi-check text-success me-2"></i>
+                                    پرداخت از طریق کیف پول، سریع‌ترین روش خرید است.
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check text-success me-2"></i>
+                                    در صورت کمبود موجودی، می‌توانید کیف پول خود را شارژ کنید.
+                                </li>
+                                <li>
+                                    <i class="bi bi-check text-success me-2"></i>
+                                    پس از پرداخت موفق، سفارش شما بلافاصله ثبت می‌شود.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .payment-option .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0.3em;
+        }
+
+            .payment-option .form-check-input:checked + label .border {
+                border-color: #0d6efd !important;
+                border-width: 2px !important;
+                background-color: rgba(13, 110, 253, 0.05) !important;
+            }
+
+        .payment-option label {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .payment-option label:hover {
+                transform: translateY(-2px);
+            }
+
+        .btn-success {
+            background: linear-gradient(135deg, #198754, #157347);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+            .btn-success:hover {
+                background: linear-gradient(135deg, #157347, #13653f);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3) !important;
+            }
+
+        .btn-outline-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .card {
+            transition: transform 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        .bg-light-primary {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+        }
+
+        .bg-light-warning {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+        }
+
+        .bg-light-success {
+            background-color: rgba(25, 135, 84, 0.1) !important;
+        }
+
+        .bg-light-info {
+            background-color: rgba(13, 202, 240, 0.1) !important;
+        }
+
+        .rounded-4 {
+            border-radius: 1rem !important;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const paymentOptions = document.querySelectorAll('.payment-option input[type="radio"]');
+            paymentOptions.forEach(option => {
+                option.addEventListener('change', function() {
+
+                    document.querySelectorAll('.payment-option').forEach(item => {
+                        item.classList.remove('active');
+                    });
+
+
+                    this.closest('.payment-option').classList.add('active');
+                });
+            });
+
+            const cancelForm = document.querySelector('form[action="/Checkout/PaymentFailed"]');
+            if (cancelForm) {
+                cancelForm.addEventListener('submit', function(e) {
+                    if (!confirm('آیا مطمئن هستید که می‌خواهید از خرید انصراف دهید؟\n\nتمام موارد سبد خرید شما حفظ خواهد شد.')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            const paymentForm = document.querySelector('form[action="/Checkout/payment"]');
+            if (paymentForm) {
+                paymentForm.addEventListener('submit', function(e) {
+                    const walletMethod = document.getElementById('walletPayment');
+                    if (walletMethod.checked) {
+                        if (!confirm('آیا از پرداخت از طریق کیف پول اطمینان دارید؟\n\nمبلغ از موجودی کیف پول شما کسر خواهد شد.')) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transition = 'all 0.2s ease';
+                });
+            });
+        });
+    </script>
+}

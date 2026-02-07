@@ -1,10 +1,15 @@
 ﻿@model Product
-<!-- تب‌های توضیحات -->
 <div class="tabs-container">
     <ul class="custom-tabs">
         <li class="active" onclick="openTab(event, 'desc')">نقد و بررسی</li>
         <li onclick="openTab(event, 'specs')">مشخصات فنی</li>
-        <li onclick="openTab(event, 'comments')">نظرات</li>
+        <li onclick="openTab(event, 'comments')">
+            نظرات
+            @if (ViewData["ReviewCount"] != null && (int)ViewData["ReviewCount"] > 0)
+            {
+                <span class="badge bg-primary ms-1">@ViewData["ReviewCount"]</span>
+            }
+        </li>
     </ul>
 
     <div id="desc" class="tab-content active">
@@ -29,6 +34,16 @@
     </div>
 
     <div id="comments" class="tab-content">
-        <p>فعلا نظری ثبت نشده است.</p>
+        @await Html.PartialAsync("Partials/_ProductReviews",
+        new ProductReviewsViewModel
+        {
+            ProductId = Model.Id,
+            ProductTitle = Model.Title,
+            AverageRating = (double)ViewData["AverageRating"],
+            ReviewCount = (int)ViewData["ReviewCount"],
+            Reviews = (List<ReviewViewModel>)ViewData["Reviews"],
+            HasUserReviewed = (bool)ViewData["HasUserReviewed"],
+            IsLoggedIn = (bool)ViewData["IsLoggedIn"]
+        })
     </div>
 </div>

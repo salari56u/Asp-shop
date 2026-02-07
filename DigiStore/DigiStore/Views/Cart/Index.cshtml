@@ -1,0 +1,275 @@
+﻿@using DigiStore.ViewModels
+@model CartViewModel
+@{
+    ViewData["Title"] = "سبد خرید";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <style>
+
+        .woocommerce-cart-form {
+            display: flex;
+            flex-wrap: wrap; 
+            gap: 20px; 
+            align-items: flex-start; 
+        }
+
+            .woocommerce-cart-form .main-product.cart-custom {
+                flex: 1 1 65%;
+                width: 65%;
+                margin-bottom: 0 !important;
+            }
+
+            .woocommerce-cart-form .cart-collaterals {
+                flex: 1 1 30%; 
+                width: 30%;
+                margin-top: 0 !important;
+                position: sticky;
+                top: 20px;
+            }
+        media (max-width: 992px) {
+            .woocommerce-cart-form
+
+        {
+            flex-direction: column;
+        }
+
+        .woocommerce-cart-form .main-product.cart-custom,
+        .woocommerce-cart-form .cart-collaterals {
+            width: 100%;
+            flex: 1 1 100%;
+        }
+
+        .woocommerce-cart-form .cart-collaterals {
+            position: static;
+            margin-top: 20px !important;
+        }
+
+        }
+    </style>
+}
+<div class="container">
+    <div class="woocommerce">
+        <section class="cart-progress">
+            <ul>
+                <li data-step="1" class="active">
+                    <a href="/Cart">سبد خرید</a>
+                </li>
+                <li data-step="2">
+                    <a href="#">تسویه حساب</a>
+                </li>
+                <li data-step="3">
+                    <span>پایان</span>
+                </li>
+            </ul>
+        </section>
+
+        <div class="woocommerce-notices-wrapper"></div>
+
+        @if (Model.Items != null && Model.Items.Any())
+        {
+            <div class="woocommerce-cart-form">
+
+                <section class="main-product cart-custom">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="product-item cart_item" id="cart-item-@item.Id">
+                            <figure>
+                                <a href="/Product/Details/@item.ProductId">
+                                    <img loading="lazy" width="300" height="300"
+                                         src="/wp-content/uploads/2025/01/@item.ImageName"
+                                         class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+                                         alt="@item.Title" />
+                                </a>
+                            </figure>
+
+                            <h2>
+                                <a href="/Product/Details/@item.ProductId">@item.Title</a>
+                            </h2>
+
+                            <div class="down-product">
+                                <div class="quantity">
+                                    <button class="plus" type="button" onclick="changeQty(@item.Id, 1)">+</button>
+
+                                    <input type="number"
+                                           id="qty-@item.Id"
+                                           class="input-text qty text"
+                                           value="@item.Quantity"
+                                           aria-label="تعداد محصول"
+                                           min="1" step="1"
+                                           inputmode="numeric"
+                                           readonly /> 
+
+                                    <button class="minus" type="button" onclick="changeQty(@item.Id, -1)">-</button>
+                                </div>
+
+                                <div class="price">
+                                    <span class="woocommerce-Price-amount amount">
+                                        <bdi>@item.Price.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="delete-cart-item">
+                                <a href="javascript:void(0)" onclick="removeCartItem(@item.Id)" class="remove" aria-label="حذف از سبد خرید">
+                                    &times; حذف از سبد خرید
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="cart-copun">
+                        <div class="coupon">
+                            <label for="coupon_code" class="screen-reader-text">کوپن:</label>
+                            <input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" placeholder="کد تخفیف" />
+                            <button type="button" class="button" name="apply_coupon">اعمال تخفیف</button>
+                        </div>
+
+                        <button type="button" class="button" onclick="location.reload()">بروزرسانی سبد</button>
+                    </div>
+
+                </section>
+
+                <div class="cart-collaterals">
+                    <div class="cart_totals">
+                        <div class="cart-left-box">
+
+                            <div class="cart-subtotal">
+                                <span>کل سبد خرید</span>
+                                <span data-title="جمع جزء">s
+                                    <span class="woocommerce-Price-amount amount" id="cart-total-price">
+                                        <bdi>@Model.GrandTotal.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi>
+                                    </span>
+                                </span>
+                            </div>
+
+                            <table class="shop_table woocommerce-checkout-review-order-table">
+                                <tr class="woocommerce-shipping-totals shipping">
+                                    <td data-title="حمل و نقل" style="width:100%">
+                                        <ul id="shipping_method" class="woocommerce-shipping-methods">
+                                            <li>
+                                                <input type="radio" name="shipping_method[0]" id="shipping_method_0_free_shipping1" value="free_shipping:1" class="shipping_method" checked='checked' />
+                                                <label for="shipping_method_0_free_shipping1">حمل و نقل رایگان</label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" name="shipping_method[0]" id="shipping_method_0_flat_rate2" value="flat_rate:2" class="shipping_method" />
+                                                <label for="shipping_method_0_flat_rate2">ارسال با پست: 60,000 تومان</label>
+                                            </li>
+                                        </ul>
+                                        <p class="woocommerce-shipping-destination">
+                                            حمل و نقل به <strong>تهران</strong>.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div class="order-total">
+                                <span>مبلغ نهایی</span>
+                                <span data-title="مجموع">
+                                    <strong>
+                                        <span class="woocommerce-Price-amount amount" id="cart-grand-total">
+                                            <bdi>@Model.GrandTotal.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi>
+                                        </span>
+                                    </strong>
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="wc-proceed-to-checkout">
+                           <a href="/Checkout" class="checkout-button button alt wc-forward">
+                                 اقدام به پرداخت
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="cart-empty-state" style="text-align:center; padding: 50px 0;">
+                <img src="/wp-content/themes/moboland/img/shop-icon-mini.png" alt="سبد خالی" style="max-width:100px; margin-bottom:20px;">
+                <p class="text-empty-cart-mini" style="font-size:18px; font-weight:bold;">سبد خرید شما خالی است.</p>
+                <a href="/Product" class="button alt">بازگشت به فروشگاه</a>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var $ = jQuery;
+
+        function changeQty(itemId, change) {
+            var input = $('#qty-' + itemId);
+            var currentVal = parseInt(input.val());
+            var newVal = currentVal + change;
+
+            if (newVal < 1) return;
+
+            input.val(newVal);
+
+            var btns = input.parent().find('button');
+            btns.prop('disabled', true);
+            $.ajax({
+                url: '/Cart/ChangeQuantity',
+                type: 'POST',
+                data: { itemId: itemId, quantity: newVal },
+
+                    success: function (res) {
+                        if (res.success) {
+                            $('#cart-total-price bdi').html(res.newTotal + '&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span>');
+                            $('#cart-grand-total bdi').html(res.newTotal + '&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span>');
+
+                            $('#header-cart-count').text(res.newCount);
+
+                            if(typeof updateMiniCart === "function") {
+                                updateMiniCart();
+                            }
+                        }
+                    },
+                error: function() {
+                    alert("خطا در برقراری ارتباط");
+                    input.val(currentVal);
+                },
+                complete: function() {
+                    btns.prop('disabled', false);
+                }
+            });
+        }
+
+        function removeCartItem(itemId) {
+            if(!confirm("آیا مطمئن هستید؟")) return;
+
+            $.ajax({
+                url: '/Cart/RemoveItem',
+                type: 'POST',
+                data: { itemId: itemId },
+                success: function (res) {
+                    if (res.success) {
+                        $('#cart-item-' + itemId).fadeOut(300, function() {
+                            $(this).remove();
+
+                            if($('.product-item.cart_item').length === 0) {
+                                location.reload();
+                            }
+                        });
+
+                        $('#cart-total-price bdi').html(res.newTotal + '&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span>');
+                        $('#cart-grand-total bdi').html(res.newTotal + '&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span>');
+
+                        if(typeof updateMiniCart === "function") {
+                            updateMiniCart();
+                        }
+                    }
+                },
+                error: function() {
+                    alert("خطا در حذف محصول");
+                }
+            });
+        }
+    </script>
+}

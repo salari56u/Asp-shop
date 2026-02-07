@@ -1,4 +1,4 @@
-﻿using DigiStore.Web.Services; // Namespace پروژه فعلی
+﻿using DigiStore.Web.Services; 
 using Kavenegar;
 
 namespace DigiStore.Web.Services

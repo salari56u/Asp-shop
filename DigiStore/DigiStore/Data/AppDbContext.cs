@@ -30,6 +30,14 @@ namespace DigiStore.Data
         public DbSet<Slider> Sliders { get; set; }
         public DbSet<Banner> Banners { get; set; }
 
+        public DbSet<Liking> likings { get; set; }
+
+
+        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }
+
+        public DbSet<SiteSetting> SiteSettings { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -71,7 +79,17 @@ namespace DigiStore.Data
                 .HasOne(o => o.Coupon)
                 .WithMany() 
                 .HasForeignKey(o => o.CouponId)
-                .IsRequired(false); 
+                .IsRequired(false);
+
+            modelBuilder.Entity<Wallet>()
+                .HasOne(w => w.User)
+                .WithOne(u => u.Wallet)
+                .HasForeignKey<Wallet>(w => w.UserId);
+
+            modelBuilder.Entity<WalletTransaction>()
+                .HasOne(t => t.Wallet)
+                .WithMany(w => w.Transactions)
+                .HasForeignKey(t => t.WalletId);
             base.OnModelCreating(modelBuilder);
         }
     }

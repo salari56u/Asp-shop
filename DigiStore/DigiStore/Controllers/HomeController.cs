@@ -63,7 +63,7 @@ namespace DigiStore.Controllers
             vm.BestSellingProducts = await _context.Products
                 .AsNoTracking()
                 .OrderByDescending(p => p.CreatedAt)
-                .Take(10)
+                .Take(12)
                 .ToListAsync();
 
 

@@ -1,0 +1,47 @@
+﻿@model SiteSetting
+@{
+    ViewBag.Title = "تایید حذف عضو";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-xl mt-4">
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            @using (Html.BeginForm("Edit", "Settings", FormMethod.Post,
+                new { enctype = "multipart/form-data", area = "Admin", id = ViewBag.setting }))
+            {
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.Key)
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Description)
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                </div>
+
+                if(Model.Key =="Site_Logo")
+                {
+                    <img src="@Url.Content(Model.Value)" alt="Current Profile" class="img-thumbnail mt-2 rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover;" />
+                    <span class="d-block small text-muted mt-1">لوگوی فعلی</span>
+                    <input type="file" name="uploadFile" class="form-control" accept="image/*" />
+                    <small class="text-muted">انتخاب فایل جدید باعث جایگزینی لوگوی قبلی می‌شود.</small>
+
+                    <input type="hidden" name="Value" value="@Model.Value" />
+                }
+                else
+                {
+                    <div class="mb-3">
+                    @Html.LabelFor(m => m.Value)
+                    @Html.TextBoxFor(m => m.Value, new { @class = "form-control" })
+                    </div>
+
+                }
+                @Html.ValidationSummary()
+                <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+                <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+            }
+
+        </div>
+    </div>
+</div>

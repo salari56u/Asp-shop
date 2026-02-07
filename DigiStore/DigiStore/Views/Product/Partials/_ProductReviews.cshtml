@@ -1,0 +1,607 @@
+﻿@model ProductReviewsViewModel
+
+<div class="reviews-container mt-4">
+    <div class="reviews-header d-flex justify-content-between align-items-center mb-4">
+        <h5 class="mb-0">
+            <i class="bi bi-chat-left-text me-2"></i>
+            نظرات کاربران
+        </h5>
+
+        @if (Model.AverageRating > 0)
+        {
+            <div class="rating-summary">
+                <div class="stars d-flex align-items-center">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Model.AverageRating)
+                        {
+                            <i class="bi bi-star-fill text-warning fs-5"></i>
+                        }
+                        else if (i - 0.5 <= Model.AverageRating)
+                        {
+                            <i class="bi bi-star-half text-warning fs-5"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-star text-warning fs-5"></i>
+                        }
+                    }
+                    <span class="ms-2 fw-bold fs-5">@Model.AverageRating.ToString("0.0")</span>
+                    <span class="text-muted ms-1">(@Model.ReviewCount نظر)</span>
+                </div>
+            </div>
+        }
+    </div>
+    @if (Model.IsLoggedIn && !Model.HasUserReviewed)
+    {
+        <div class="add-review-form card mb-4">
+            <div class="card-body">
+                <h6 class="card-title mb-3">ثبت نظر جدید</h6>
+
+                <form id="reviewForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="productId" value="@Model.ProductId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">امتیاز شما</label>
+                        <select class="form-select" id="ratingSelect" required>
+                            <option value="" selected disabled>انتخاب امتیاز</option>
+                            <option value="1">۱ ستاره (خیلی ضعیف)</option>
+                            <option value="2">۲ ستاره (ضعیف)</option>
+                            <option value="3">۳ ستاره (متوسط)</option>
+                            <option value="4">۴ ستاره (خوب)</option>
+                            <option value="5">۵ ستاره (عالی)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">نظر شما</label>
+                        <textarea class="form-control" id="comment" rows="3"
+                              placeholder="تجربه خود از این محصول را بنویسید..." required></textarea>
+                        <div class="form-text">حداقل ۱۰ کاراکتر، حداکثر ۱۰۰۰ کاراکتر</div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i>
+                            ارسال نظر
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+    else if (!Model.IsLoggedIn)
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            برای ثبت نظر باید
+            <a href="@Url.Action("Login", "Auth")" class="alert-link">وارد حساب کاربری</a>
+            شوید.
+        </div>
+    }
+    <div class="reviews-list">
+        @if (Model.Reviews != null && Model.Reviews.Any())
+        {
+            foreach (var review in Model.Reviews)
+            {
+                bool canDelete = (DateTime.Now - review.CreatedAt).TotalHours <= 24;
+                
+                <div class="review-item card mb-3" id="review-@review.Id">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h6 class="mb-1">
+                                    <i class="bi bi-person-circle me-1"></i>
+                                    @review.UserName
+                                    @if (review.IsCurrentUserReview)
+                                    {
+                                        <span class="badge bg-info ms-2">شما</span>
+                                    }
+                                </h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock me-1"></i>
+                                    ثبت شده: @review.CreatedAt.ToString("yyyy/MM/dd HH:mm")
+                                    @if (review.UpdatedAt.HasValue)
+                                    {
+                                        <span class="text-info" title="ویرایش شده">
+                                            (ویرایش شده: @review.UpdatedAt.Value.ToString("yyyy/MM/dd HH:mm"))
+                                        </span>
+                                    }
+                                </small>
+                            </div>
+
+                            <div class="stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi @(i <= review.Rating ? "bi-star-fill" : "bi-star") text-warning"></i>
+                                }
+                            </div>
+                        </div>
+
+                        <p class="mb-0" id="comment-@review.Id">@review.Comment</p>
+                        @if (review.IsCurrentUserReview)
+                        {
+                            <div class="review-actions mt-3 border-top pt-3">
+                                <button class="btn btn-sm btn-outline-primary edit-review-btn" 
+                                        data-review-id="@review.Id"
+                                        data-rating="@review.Rating"
+                                        data-comment="@review.Comment">
+                                    <i class="bi bi-pencil me-1"></i>ویرایش
+                                </button>
+                                
+                                <button class="btn btn-sm btn-outline-danger delete-review-btn @(!canDelete ? "disabled" : "")" 
+                                        data-review-id="@review.Id"
+                                        data-created-at="@review.CreatedAt.ToString("O")"
+                                        @(!canDelete ? "disabled title='زمان حذف گذشته'" : "")>
+                                    <i class="bi bi-trash me-1"></i>حذف
+                                </button>
+                                
+                                @if (!canDelete)
+                                {
+                                    <small class="text-muted d-block mt-2">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        امکان حذف نظر فقط تا ۲۴ ساعت پس از ثبت وجود دارد.
+                                    </small>
+                                }
+                            </div>
+                            <div class="edit-review-form mt-3" id="edit-form-@review.Id" style="display: none;">
+                                <div class="card border-primary">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-primary">
+                                            <i class="bi bi-pencil-square me-2"></i>ویرایش نظر
+                                        </h6>
+                                        <form class="edit-review-form-inner" data-review-id="@review.Id">
+                                            @Html.AntiForgeryToken()
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">امتیاز</label>
+                                                <select class="form-select edit-rating" 
+                                                        id="edit-rating-@review.Id" required>
+                                                    <option value="" disabled>انتخاب امتیاز</option>
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        <option value="@i" selected="@(i == review.Rating)">
+                                                            @i ستاره
+                                                        </option>
+                                                    }
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">نظر شما</label>
+                                                <textarea class="form-control edit-comment" 
+                                                          id="edit-comment-@review.Id" 
+                                                          rows="3" required
+                                                          minlength="10" maxlength="1000"
+                                                          placeholder="نظر خود را ویرایش کنید...">@review.Comment</textarea>
+                                                <div class="form-text">
+                                                    <span id="char-count-@review.Id">@review.Comment.Length</span> / 1000 کاراکتر
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between">
+                                                <button type="button" 
+                                                        class="btn btn-secondary cancel-edit-btn"
+                                                        data-review-id="@review.Id">
+                                                    <i class="bi bi-x-circle me-1"></i>انصراف
+                                                </button>
+                                                <button type="submit" 
+                                                        class="btn btn-primary"
+                                                        data-review-id="@review.Id">
+                                                    <i class="bi bi-save me-1"></i>
+                                                    ذخیره تغییرات
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-4">
+                <i class="bi bi-chat-square-text fs-1 text-muted mb-3"></i>
+                <p class="text-muted">هنوز نظری برای این محصول ثبت نشده است.</p>
+                <p class="text-muted">اولین نفری باشید که نظر می‌دهد.</p>
+            </div>
+        }
+    </div>
+</div>
+<div class="modal fade" id="deleteReviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>تایید حذف
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>آیا مطمئن هستید که می‌خواهید این نظر را حذف کنید؟</p>
+                <div class="alert alert-warning mt-2">
+                    <i class="bi bi-info-circle me-2"></i>
+                    این عمل قابل بازگشت نیست و امتیاز شما نیز حذف خواهد شد.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i>انصراف
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="bi bi-trash me-1"></i>حذف نظر
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .review-item {
+        border-right: 3px solid #0d6efd;
+        transition: all 0.3s ease;
+    }
+    
+    .review-item:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+
+    .reviews-header {
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 1rem;
+    }
+    
+    .review-actions {
+        opacity: 0.7;
+        transition: opacity 0.3s;
+    }
+    
+    .review-item:hover .review-actions {
+        opacity: 1;
+    }
+    
+    .edit-review-form {
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    .delete-review-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    #deleteReviewModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 9999;
+    }
+
+    #deleteReviewModal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #deleteReviewModal .modal-dialog {
+        background: white;
+        border-radius: 8px;
+        max-width: 500px;
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    #deleteReviewModal .modal-content {
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+</style>
+
+<script>
+    let reviewToDelete = null;
+    async function logFormData(formData) {
+        const data = {};
+        for (let [key, value] of formData.entries()) {
+            data[key] = value;
+        }
+        console.log('FormData:', data);
+        return data;
+    }
+    document.getElementById('reviewForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const rating = document.getElementById('ratingSelect').value;
+        const comment = document.getElementById('comment').value.trim();
+        const productId = document.getElementById('productId').value;
+        
+        console.log('Add Review Data - Raw:', { rating, comment, productId });
+
+        if (!rating) {
+            alert('لطفا امتیاز انتخاب کنید');
+            return;
+        }
+
+        if (!comment || comment.length < 10) {
+            alert('نظر باید حداقل ۱۰ کاراکتر باشد');
+            return;
+        }
+
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = 'در حال ارسال...';
+        submitBtn.disabled = true;
+
+        try {
+            const data = {
+                ProductId: parseInt(productId),
+                Rating: parseInt(rating),
+                Comment: comment
+            };
+            
+            console.log('Sending JSON:', data);
+
+            const response = await fetch('@Url.Action("AddReview", "Product")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            console.log('Response status:', response.status);
+            const responseText = await response.text();
+            console.log('Response text:', responseText);
+            
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('JSON parse error:', parseError);
+                throw new Error('پاسخ سرور نامعتبر است: ' + responseText);
+            }
+            
+            console.log('Response data:', result);
+
+            if (result.success) {
+                alert('✅ نظر شما با موفقیت ثبت شد');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                alert('❌ ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ خطا: ' + error.message);
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-review-btn')) {
+            const btn = e.target.closest('.edit-review-btn');
+            const reviewId = btn.dataset.reviewId;
+            
+            document.querySelectorAll('.edit-review-form').forEach(form => {
+                form.style.display = 'none';
+            });
+            
+            const editForm = document.getElementById(`edit-form-${reviewId}`);
+            if (editForm) {
+                editForm.style.display = 'block';
+                document.getElementById(`edit-rating-${reviewId}`).value = btn.dataset.rating;
+                setTimeout(() => {
+                    editForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        }
+
+        if (e.target.closest('.cancel-edit-btn')) {
+            const btn = e.target.closest('.cancel-edit-btn');
+            const reviewId = btn.dataset.reviewId;
+            
+            const editForm = document.getElementById(`edit-form-${reviewId}`);
+            if (editForm) {
+                editForm.style.display = 'none';
+            }
+        }
+    });
+
+    document.addEventListener('submit', async function(e) {
+        if (e.target.closest('.edit-review-form-inner')) {
+            e.preventDefault();
+            
+            const form = e.target.closest('.edit-review-form-inner');
+            const reviewId = form.dataset.reviewId;
+            const rating = document.getElementById(`edit-rating-${reviewId}`).value;
+            const comment = document.getElementById(`edit-comment-${reviewId}`).value.trim();
+            
+            console.log('Update Review Data - Raw:', { reviewId, rating, comment });
+
+            if (!rating) {
+                alert('لطفا امتیاز انتخاب کنید');
+                return;
+            }
+            
+            if (!comment || comment.length < 10) {
+                alert('نظر باید حداقل ۱۰ کاراکتر باشد');
+                return;
+            }
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'در حال ویرایش...';
+            submitBtn.disabled = true;
+            
+            try {
+                const data = {
+                    ReviewId: parseInt(reviewId),
+                    Rating: parseInt(rating),
+                    Comment: comment
+                };
+                
+                console.log('Sending Update JSON:', data);
+
+                const response = await fetch('@Url.Action("UpdateReview", "Product")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                console.log('Update Response status:', response.status);
+                
+                const responseText = await response.text();
+                console.log('Update Response text:', responseText);
+                
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    throw new Error('پاسخ سرور نامعتبر است: ' + responseText);
+                }
+
+                console.log('Update Response data:', result);
+
+                if (result.success) {
+                    alert('✅ نظر شما با موفقیت ویرایش شد');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    alert('❌ ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ خطا: ' + error.message);
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+    });
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-review-btn:not(.disabled)')) {
+            const btn = e.target.closest('.delete-review-btn');
+            const reviewId = btn.dataset.reviewId;
+            const createdAt = new Date(btn.dataset.createdAt);
+            const now = new Date();
+            const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
+            
+            if (hoursDiff > 24) {
+                alert('❌ امکان حذف نظر فقط تا ۲۴ ساعت پس از ثبت وجود دارد.');
+                return;
+            }
+            
+            reviewToDelete = reviewId;
+            document.getElementById('deleteReviewModal').style.display = 'block';
+            document.getElementById('deleteReviewModal').classList.add('show');
+        }
+    });
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+        if (!reviewToDelete) return;
+        
+        console.log('Deleting review:', reviewToDelete);
+        
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = 'در حال حذف...';
+        btn.disabled = true;
+        document.getElementById('deleteReviewModal').style.display = 'none';
+        document.getElementById('deleteReviewModal').classList.remove('show');
+        
+        try {
+            const data = {
+                ReviewId: parseInt(reviewToDelete)
+            };
+            
+            console.log('Sending Delete JSON:', data);
+
+            const response = await fetch('@Url.Action("DeleteReview", "Product")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            console.log('Delete Response status:', response.status);
+            
+            const responseText = await response.text();
+            console.log('Delete Response text:', responseText);
+            
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('JSON parse error:', parseError);
+                throw new Error('پاسخ سرور نامعتبر است: ' + responseText);
+            }
+
+            console.log('Delete Response data:', result);
+
+            if (result.success) {
+                alert('✅ نظر شما با موفقیت حذف شد');
+                const reviewElement = document.getElementById(`review-${reviewToDelete}`);
+                if (reviewElement) {
+                    reviewElement.style.transition = 'all 0.5s ease';
+                    reviewElement.style.opacity = '0';
+                    setTimeout(() => {
+                        reviewElement.remove();
+                        location.reload();
+                    }, 500);
+                } else {
+                    location.reload();
+                }
+            } else {
+                alert('❌ ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ خطا: ' + error.message);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            reviewToDelete = null;
+        }
+    });
+    document.querySelector('#deleteReviewModal .btn-secondary').addEventListener('click', function() {
+        document.getElementById('deleteReviewModal').style.display = 'none';
+        document.getElementById('deleteReviewModal').classList.remove('show');
+        reviewToDelete = null;
+    });
+    document.querySelector('#deleteReviewModal .btn-close').addEventListener('click', function() {
+        document.getElementById('deleteReviewModal').style.display = 'none';
+        document.getElementById('deleteReviewModal').classList.remove('show');
+        reviewToDelete = null;
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.matches('.edit-comment')) {
+            const reviewId = e.target.id.replace('edit-comment-', '');
+            const charCount = document.getElementById(`char-count-${reviewId}`);
+            if (charCount) {
+                charCount.textContent = e.target.value.length;
+            }
+        }
+    });
+</script>

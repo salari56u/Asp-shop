@@ -17,22 +17,15 @@
     <div class="close-menu-responsive-page-moboland"></div>
 
     <section class="hero-single">
-
-        <!-- 1. فراخوانی سایدبار -->
         <partial name="Partials/_ShopSidebar" model="Model" />
-
         <div class="main-single">
-
-            <!-- بخش مرتب‌سازی و آمار -->
             <div class="before-shop">
                 <p class="woocommerce-result-count">
-                    <!-- نمایش آمار حدودی -->
                     نمایش @Model.Products.Count محصول
                 </p>
 
                 <div class="desktop-moboland">
                     <form class="woocommerce-ordering" method="get">
-                        <!-- حفظ فیلترهای دیگر هنگام تغییر مرتب‌سازی -->
                         @if (!string.IsNullOrEmpty(Model.Search))
                         {
                             <input type="hidden" name="search" value="@Model.Search" />
@@ -56,7 +49,6 @@
                                 <a href="javascript:void(0)" onclick="setSort('price-desc')">گران‌ترین</a>
                             </li>
                         </ul>
-                        <!-- اینپوت مخفی برای نگهداری مقدار مرتب‌سازی فعلی -->
                         <input type="hidden" id="sort-select" name="sortBy" value="@Model.SortBy" />
                     </form>
                 </div>
@@ -66,12 +58,7 @@
                     <span>فیلترهای محصولات</span>
                 </div>
             </div>
-
-            <!-- 2. لیست محصولات (گرید) + صفحه‌بندی -->
-            <!-- اصلاح مهم: حذف foreach و ارسال کل مدل به پارشیال -->
             <partial name="Partials/_ProductGrid" model="Model" />
-
-            <!-- اینپوت مخفی برای دسته‌بندی جهت استفاده در JS -->
             <input type="hidden" id="hidden-cat-id" value="@Model.CategoryId" />
 
         </div>
@@ -79,23 +66,20 @@
 </div>
 
 @section Scripts {
+    <script src="/wp-content/themes/moboland/js/maind4d0.js"></script>
+
     <script>
-        // *** خط زیر بسیار مهم است: jQuery را میگیرد و به عنوان $ به داخل تابع میفرستد ***
         jQuery(document).ready(function ($) {
 
-            console.log("Shop Script Loaded with jQuery Version:", $.fn.jquery); // برای تست
+            console.log("Shop Script Loaded with jQuery Version:", $.fn.jquery); 
 
             let searchTimeout;
-
-            // تابع کمکی برای تغییر سورت
-            window.setSort = function(sortValue) { // window اضافه شد تا گلوبال شود
+            window.setSort = function(sortValue) { 
                 $('.catalog-list li').removeClass('active');
                 $('#sort-select').val(sortValue);
                 filterProducts(1);
             }
-
-            // تابع اصلی فیلتر
-            window.filterProducts = function(page = 1) { // window اضافه شد
+            window.filterProducts = function(page = 1) { 
                 $('#grid-loader').fadeIn(200);
                 $('.main-product').css('opacity', '0.5');
 
@@ -131,35 +115,23 @@
                     }
                 });
             }
-
-            // ایونت‌ها (Events)
-            // استفاده از document برای هندل کردن عناصر داینامیک
-
-            // 1. سرچ
             $(document).on('input', '#s', function () {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(function () {
                     filterProducts(1);
                 }, 500);
             });
-
-            // 2. سابمیت فرم‌ها
             $(document).on('submit', '.searchform, .widget_price_filter form', function (e) {
                 e.preventDefault();
                 filterProducts(1);
             });
-
-            // 3. دکمه‌های صفحه‌بندی
             $(document).on('click', '.ajax-page-link', function (e) {
                 e.preventDefault();
                 const page = $(this).data('page');
                 filterProducts(page);
                 $('html, body').animate({ scrollTop: $(".main-single").offset().top - 100 }, 500);
             });
-
-            // 4. دسته‌بندی‌ها
             $(document).on('click', '.product-categories a', function (e) {
-                // اگر لینک خالی نیست (مثلا # نیست)
                 if ($(this).attr('href') && $(this).attr('href') !== '#') {
                     e.preventDefault();
                     $('.product-categories li').removeClass('current-cat');

@@ -1,0 +1,66 @@
+﻿@model IEnumerable<User>
+@{
+    ViewData["Title"] = "مدیریت کاربران";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">لیست کاربران</h3>
+        <a href="@Url.Action("Create")" class="btn btn-teal shadow-sm">
+            <i class="bx bx-plus me-1"></i> افزودن کاربر جدید
+        </a>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>شناسه</th>
+                    <th>نام کاربری (موبایل)</th>
+                    <th>ایمیل</th>
+                    <th>نقش</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    // گرفتن نام نقش برای نمایش
+                    var roleName = item.UserRoles.FirstOrDefault()?.Role?.Name ?? "بدون نقش";
+
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.UserName</td>
+                        <td>@item.Email</td>
+                        <td>
+                            @if (roleName == "SuperAdmin")
+                            {
+                                <span class="badge bg-danger">مدیر ارشد</span>
+                            }
+                            else if (roleName == "Admin")
+                            {
+                                <span class="badge bg-warning text-dark">مدیر</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info text-dark">کاربر عادی</span>
+                            }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-datatable btn-icon btn-transparent-dark me-2" title="ویرایش">
+                                <i class="bx bx-edit"></i>
+                            </a>
+
+                            <!-- دکمه حذف -->
+                            @using (Html.BeginForm("Delete", "Users", new { area = "Admin", id = item.Id }, FormMethod.Post, true, new { @style = "display:inline;", onsubmit = "return confirm('آیا مطمئن هستید؟');" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+﻿@model PaymentViewMode
+@{
+    ViewData["Title"] = "نتیجه پرداخت";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            @if (Model.msg.Contains("موفق"))
+            {
+                <div class="card border-success shadow-lg">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            پرداخت موفق
+                        </h4>
+                    </div>
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="bi bi-check-circle text-success" style="font-size: 5rem;"></i>
+                        </div>
+                        <h3 class="text-success mb-3">@Model.msg</h3>
+
+                        @if (Model.OrderId.HasValue)
+                        {
+                            <div class="alert alert-info">
+                                <h5>شماره سفارش شما: <strong>#@Model.OrderId.Value</strong></h5>
+                            </div>
+                        }
+
+                        <div class="my-4">
+                            <p class="text-muted">مبلغ پرداخت شده:</p>
+                            <h2 class="fw-bold">@Model.finalAmount.ToString("N0") تومان</h2>
+                            <small class="text-muted">(از طریق کیف پول)</small>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="text-muted mb-2">سفارش شما در حال پردازش است و به زودی ارسال خواهد شد.</p>
+                            <p class="text-muted">می‌توانید وضعیت سفارش را از پروفایل خود پیگیری کنید.</p>
+                        </div>
+
+                        <div class="mt-5">
+                            <a href="@Url.Action("Index", "Profile")" class="btn btn-primary btn-lg me-3">
+                                <i class="bi bi-person-circle me-2"></i>
+                                مشاهده پروفایل
+                            </a>
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-house me-2"></i>
+                                بازگشت به خانه
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card border-danger shadow-lg">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-x-circle-fill me-2"></i>
+                            پرداخت ناموفق
+                        </h4>
+                    </div>
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="bi bi-x-circle text-danger" style="font-size: 5rem;"></i>
+                        </div>
+                        <h3 class="text-danger mb-3">@Model.msg</h3>
+
+                        <div class="my-4">
+                            <p class="text-muted">مبلغ سفارش:</p>
+                            <h2 class="fw-bold">@Model.finalAmount.ToString("N0") تومان</h2>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="text-muted">
+                                متأسفانه پرداخت انجام نشد. لطفاً مجدداً تلاش کنید یا از روش دیگری برای پرداخت استفاده نمایید.
+                            </p>
+                        </div>
+
+                        <div class="mt-5">
+                            <a href="@Url.Action("Index", "Checkout")" class="btn btn-primary btn-lg me-3">
+                                <i class="bi bi-arrow-repeat me-2"></i>
+                                تلاش مجدد
+                            </a>
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-house me-2"></i>
+                                بازگشت به خانه
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

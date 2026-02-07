@@ -7,7 +7,7 @@ public class Category
     public int? ParentCategoryId { get; set; }
     public string? ImageName { get; set; }
 
-    public Category ParentCategory { get; set; }
+    public Category? ParentCategory { get; set; }
 
 
 

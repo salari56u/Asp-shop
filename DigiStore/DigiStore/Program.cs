@@ -1,36 +1,66 @@
 ﻿using DigiStore.Data;
+using DigiStore.Services.CartServices;
 using DigiStore.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-//سرویس احراز هویت
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Auth/Login"; 
-        options.ExpireTimeSpan = TimeSpan.FromDays(2); 
-    });
 
-// Add services to the container.
+const string AdminScheme = "AdminScheme";
+const string UserScheme = "UserScheme";
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = UserScheme;
+    options.DefaultChallengeScheme = UserScheme;
+})
+
+.AddCookie(UserScheme, options =>
+{
+    options.Cookie.Name = ".DigiStore.User"; 
+    options.LoginPath = "/Account/SendOtp"; 
+    options.AccessDeniedPath = "/Home/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromDays(2);
+})
+
+.AddCookie(AdminScheme, options =>
+{
+    options.Cookie.Name = ".DigiStore.Admin"; 
+    options.LoginPath = "/Admin/Account/Login"; 
+    options.AccessDeniedPath = "/Admin/Account/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromHours(1); 
+});
+
+
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<ISmsService, SmsService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<ISiteSettingService, SiteSettingService>();
 builder.Services.AddMemoryCache();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    DbSeeder.Seed(context);
+}
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -41,6 +71,20 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Request: {context.Request.Method} {context.Request.Path}");
+    await next();
+});
+
+
+app.MapControllerRoute(
+    name: "areas", 
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+
+
 
 app.MapControllerRoute(
     name: "default",

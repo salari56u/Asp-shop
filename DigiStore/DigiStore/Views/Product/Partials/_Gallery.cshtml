@@ -4,14 +4,12 @@
 }
 
 
-<!-- بخش گالری حرفه‌ای (سمت راست) -->
 <div class="gallery-section">
     <div class="main-image-box" id="zoom-container">
         <img id="main-image" src="@imagePath@Model.MainImageName" alt="@Model.Title" />
     </div>
 
     <div class="thumbs-list">
-        <!-- عکس اصلی به عنوان اولین تامبنیل -->
         <div class="thumb-item active" onclick="changeImage('@imagePath@Model.MainImageName', this)">
             <img src="@imagePath@Model.MainImageName" alt="main" />
         </div>

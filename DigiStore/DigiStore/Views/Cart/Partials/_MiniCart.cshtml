@@ -1,0 +1,47 @@
+﻿@using DigiStore.ViewModels
+@model CartViewModel
+
+<input type="hidden" id="cart-total-count-value" value="@Model.TotalCount" />
+
+@if (Model.Items.Any())
+{
+    <div class="widget_shopping_cart_content">
+        <ul class="woocommerce-mini-cart cart_list product_list_widget">
+            @foreach (var item in Model.Items)
+            {
+                <li class="woocommerce-mini-cart-item mini_cart_item">
+                    <a href="javascript:void(0)" onclick="removeFromCart(@item.Id)" class="remove remove_from_cart_button" aria-label="حذف">×</a>
+
+                    <a href="/Product/Details/@item.ProductId">
+                        <img src="/wp-content/uploads/2025/01/@item.ImageName" class="attachment-woocommerce_gallery_thumbnail size-woocommerce_gallery_thumbnail" alt="">
+                        @item.Title
+                    </a>
+
+                    <span class="quantity">
+                        @item.Quantity × <span class="woocommerce-Price-amount amount">
+                            <bdi>@item.Price.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi>
+                        </span>
+                    </span>
+                </li>
+            }
+        </ul>
+
+        <p class="woocommerce-mini-cart__total total">
+            <strong>جمع جزء:</strong>
+            <span class="woocommerce-Price-amount amount">
+                <bdi>@Model.GrandTotal.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi>
+            </span>
+        </p>
+
+        <p class="woocommerce-mini-cart__buttons buttons">
+            <a href="/Cart" class="button wc-forward">مشاهده سبد خرید</a>
+        </p>
+    </div>
+}
+else
+{
+    <p class="woocommerce-mini-cart__empty-message">
+        <img src="/wp-content/themes/moboland/img/shop-icon-mini.png" alt="">
+        <span class="text-empty-cart-mini">سبد خرید شما خالی است.</span>
+    </p>
+}

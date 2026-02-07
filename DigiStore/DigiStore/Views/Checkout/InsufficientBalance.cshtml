@@ -1,0 +1,115 @@
+﻿@model InsufficientBalanceViewModel
+@{
+    ViewData["Title"] = "موجودی ناکافی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger shadow-lg mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        موجودی کیف پول شما کافی نیست!
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading">لطفا موجودی کیف پول خود را افزایش دهید</h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1">موجودی فعلی کیف پول:</p>
+                                <h3 class="text-danger">@Model.WalletBalance.ToString("N0") تومان</h3>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1">مبلغ سفارش شما:</p>
+                                <h3>@Model.OrderAmount.ToString("N0") تومان</h3>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3 bg-light rounded">
+                            <p class="mb-0">
+                                <i class="bi bi-info-circle me-2"></i>
+                                شما به
+                                <strong class="text-danger">@Model.Shortage.ToString("N0") تومان</strong>
+                                دیگر برای تکمیل خرید نیاز دارید.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-6">
+                            <a href="@Url.Action("Wallet", "Profile")"
+                               class="btn btn-success w-100 py-3">
+                                <i class="bi bi-wallet2 me-2"></i>
+                                افزایش موجودی کیف پول
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="@Url.Action("Index", "Checkout")"
+                               class="btn btn-outline-secondary w-100 py-3">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                بازگشت به صفحه تسویه حساب
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-cart-check me-2"></i>
+                        خلاصه سبد خرید شما
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>محصول</th>
+                                    <th class="text-center">تعداد</th>
+                                    <th class="text-end">قیمت واحد</th>
+                                    <th class="text-end">جمع</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Cart.Items)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @if (!string.IsNullOrEmpty(item.ImageName))
+                                                {
+                                                    <img src="~/images/products/@item.ImageName"
+                                                         alt="@item.Title"
+                                                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-left: 10px;">
+                                                }
+                                                <div>
+                                                    <h6 class="mb-0">@item.Title</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">@item.Quantity</td>
+                                        <td class="text-end">@item.Price.ToString("N0") تومان</td>
+                                        <td class="text-end">@item.TotalPrice.ToString("N0") تومان</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>جمع کل:</strong></td>
+                                    <td class="text-end">
+                                        <h5 class="text-success mb-0">@Model.OrderAmount.ToString("N0") تومان</h5>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
