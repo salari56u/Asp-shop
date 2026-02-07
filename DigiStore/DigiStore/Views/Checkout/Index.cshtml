@@ -1,0 +1,205 @@
+﻿@model DigiStore.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "تسویه حساب";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="woocommerce">
+        <section class="cart-progress">
+            <ul>
+                <li data-step="1">
+                    <a href="/Cart">سبد خرید</a>
+                </li>
+                <li data-step="2" class="active">
+                    <span>تسویه حساب</span>
+                </li>
+                <li data-step="3">
+                    <span>پایان</span>
+                </li>
+            </ul>
+        </section>
+
+        <div class="woocommerce-notices-wrapper"></div>
+
+        <form method="post" action="/Checkout/paymentPage" class="checkout woocommerce-checkout">
+
+            <div class="row" style="display:flex; flex-wrap:wrap; gap:20px;">
+                <div class="col-lg-8 col-md-12" style="flex: 1 1 65%;">
+                    <div class="woocommerce-billing-fields">
+                        <h3>آدرس تحویل سفارش</h3>
+
+                        @if (Model.UserAddresses.Any())
+                        {
+                            <div class="address-list">
+                                @foreach (var addr in Model.UserAddresses)
+                                {
+                                    <div class="address-item" style="border:1px solid #ddd; padding:15px; margin-bottom:10px; border-radius:8px;">
+                                        <label style="display:flex; align-items:center; cursor:pointer; width:100%;">
+                                            <input type="radio" name="SelectedAddressId" value="@addr.Id" @(addr == Model.UserAddresses.First() ? "checked" : "") style="margin-left:10px;" />
+                                            <div>
+                                                <strong>@addr.ReceiverName</strong> | @addr.ReceiverPhone <br />
+                                                <span style="color:#666; font-size:13px;">@addr.Province، @addr.City، @addr.FullAddress</span> <br />
+                                                <small>کد پستی: @addr.PostalCode</small>
+                                            </div>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                شما هنوز آدرسی ثبت نکرده‌اید.
+                            </div>
+                        }
+
+                        <button type="button" class="button alt" id="btn-add-address">
+                            <i class="fa fa-plus"></i> افزودن آدرس جدید
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12" style="flex: 1 1 30%;">
+                    <div id="order_review" class="woocommerce-checkout-review-order">
+                        <h3 id="order_review_heading">سفارش شما</h3>
+
+                        <table class="shop_table woocommerce-checkout-review-order-table">
+                            <thead>
+                                <tr>
+                                    <th class="product-name">محصول</th>
+                                    <th class="product-total">جمع جزء</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Cart.Items)
+                                {
+                                    <tr class="cart_item">
+                                        <td class="product-name">
+                                            @item.Title&nbsp; <strong class="product-quantity">&times;&nbsp;@item.Quantity</strong>
+                                        </td>
+                                        <td class="product-total">
+                                            <span class="woocommerce-Price-amount amount">
+                                                <bdi>@item.TotalPrice.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="cart-subtotal">
+                                    <th>جمع کل سبد خرید</th>
+                                    <td><span class="woocommerce-Price-amount amount"><bdi>@Model.Cart.GrandTotal.ToString("N0")&nbsp;تومان</bdi></span></td>
+                                </tr>
+                                <tr class="shipping">
+                                    <th>هزینه ارسال</th>
+                                    <td><span class="woocommerce-Price-amount amount">پس کرایه (تیپاکس)</span></td>
+                                </tr>
+                                <tr class="order-total">
+                                    <th>مبلغ قابل پرداخت</th>
+                                    <td><strong><span class="woocommerce-Price-amount amount"><bdi>@Model.Cart.GrandTotal.ToString("N0")&nbsp;تومان</bdi></span></strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div id="payment" class="woocommerce-checkout-payment">
+                            <ul class="wc_payment_methods payment_methods methods">
+                                <li class="wc_payment_method payment_method_zarinpal">
+                                    <input id="payment_method_zarinpal" type="radio" class="input-radio" name="payment_method" value="zarinpal" checked="checked">
+                                    <label for="payment_method_zarinpal">پرداخت امن زرین‌پال</label>
+                                </li>
+                            </ul>
+                            <div class="form-row place-order">
+                                <button type="submit" class="button alt" id="place_order" value="ثبت سفارش" data-value="ثبت سفارش">ثبت سفارش و پرداخت</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="add-address-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
+    <div style="background:#fff; width:90%; max-width:500px; margin:50px auto; padding:20px; border-radius:10px;">
+        <h4>افزودن آدرس جدید</h4>
+        <form action="/Checkout/AddAddress" method="post">
+            <input type="text" name="ReceiverName" placeholder="نام گیرنده" class="input-text" required style="margin-bottom:10px;" />
+            <input type="text" name="ReceiverPhone" placeholder="شماره تماس" class="input-text" required style="margin-bottom:10px;" />
+            <input type="text" name="Province" placeholder="استان" class="input-text" required style="margin-bottom:10px;" />
+            <input type="text" name="City" placeholder="شهر" class="input-text" required style="margin-bottom:10px;" />
+            <textarea name="FullAddress" placeholder="آدرس پستی دقیق" class="input-text" required style="margin-bottom:10px;"></textarea>
+            <input type="text" name="PostalCode" placeholder="کد پستی" class="input-text" required style="margin-bottom:10px;" />
+
+            <button type="submit" class="button alt">ثبت آدرس</button>
+            <button type="button" class="button" id="btn-close-modal">انصراف</button>
+        </form>
+    </div>
+</div
+
+
+@section Scripts {
+    <script>
+        jQuery(document).ready(function($) {
+            
+            // باز کردن مودال
+            $('#btn-add-address').on('click', function(e) {
+                e.preventDefault();
+                $('#add-address-modal').fadeIn();
+            });
+
+            // بستن مودال
+            $('#btn-close-modal').on('click', function(e) {
+                e.preventDefault();
+                $('#add-address-modal').fadeOut();
+            });
+
+            // بستن مودال با کلیک روی فضای خالی
+            $('#add-address-modal').on('click', function(e) {
+                if (e.target === this) {
+                    $(this).fadeOut();
+                }
+            });
+
+            // نمایش پیام خطا اگر وجود دارد - روش صحیح
+            @if (TempData["Error"] != null)
+            {
+                var errorMessage = @Html.Raw(Json.Serialize(TempData["Error"]));
+                var shortage = @Html.Raw(Json.Serialize(TempData["Shortage"]?.ToString()));
+                var walletBalance = @Html.Raw(Json.Serialize(TempData["WalletBalance"]?.ToString()));
+                var neededAmount = @Html.Raw(Json.Serialize(TempData["NeededAmount"]?.ToString()));
+                
+                <text>
+                $(document).ready(function() {
+                    var htmlContent = '<p>' + @Html.Raw(Json.Serialize(TempData["Error"])) + '</p>';
+                    
+                    @if (TempData["Shortage"] != null)
+                    {
+                        <text>
+                        htmlContent += '<hr><div class="text-start">';
+                        htmlContent += '<p>موجودی فعلی: <strong>' + @Html.Raw(Json.Serialize(TempData["WalletBalance"]?.ToString())) + ' تومان</strong></p>';
+                        htmlContent += '<p>مبلغ مورد نیاز: <strong>' + @Html.Raw(Json.Serialize(TempData["NeededAmount"]?.ToString())) + ' تومان</strong></p>';
+                        htmlContent += '<p>مقدار کمبود: <strong class="text-danger">' + @Html.Raw(Json.Serialize(TempData["Shortage"]?.ToString())) + ' تومان</strong></p>';
+                        htmlContent += '</div>';
+                        htmlContent += '<div class="mt-3">';
+                        htmlContent += '<a href="@Url.Action("Wallet", "Profile")" class="btn btn-success w-100">';
+                        htmlContent += '<i class="bi bi-wallet2 me-2"></i>';
+                        htmlContent += 'افزایش موجودی کیف پول';
+                        htmlContent += '</a>';
+                        htmlContent += '</div>';
+                        </text>
+                    }
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطا!',
+                        html: htmlContent
+                    });
+                });
+                </text>
+            }
+
+        });
+    </script>
+}

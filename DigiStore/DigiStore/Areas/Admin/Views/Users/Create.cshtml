@@ -1,0 +1,74 @@
+﻿@model DigiStore.Models.ViewModels.UserCreateViewModel
+@{
+    ViewBag.Title = "افزودن کاربر جدید";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+    <div class="container-xl px-4">
+        <div class="page-header-content pt-4">
+            <h1 class="page-header-title">افزودن کاربر جدید</h1>
+        </div>
+    </div>
+</header>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var item in ViewData.ModelState)
+        {
+            foreach (var error in item.Value.Errors)
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        }
+    </div>
+}
+
+<div class="container-xl px-4 mt-n10">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-body p-4">
+
+    @using (Html.BeginForm("Create", "Users", new { area = "Admin" }, FormMethod.Post, true, new { @class = "form-horizontal" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        @Html.LabelFor(m => m.UserName)
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "مثال: 09120000000" })
+                        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        @Html.LabelFor(m => m.Email)
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "example@domain.com" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        @Html.LabelFor(m => m.Password)
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        @Html.LabelFor(m => m.RoleId)
+                        @Html.DropDownListFor(m => m.RoleId, ViewBag.Roles as SelectList, "-- انتخاب نقش --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.RoleId, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-save"></i> ذخیره کاربر
+                    </button>
+                    <a href="@Url.Action("Index", "Users", new { area = "Admin" })" class="btn btn-secondary">بازگشت</a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

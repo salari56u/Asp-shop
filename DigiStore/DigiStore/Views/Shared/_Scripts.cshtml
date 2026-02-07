@@ -44,6 +44,9 @@
     })();
 </script>
 
+
+
+
 <script type="text/javascript">
     (function ($) {
         document.addEventListener('DOMContentLoaded', function () {
@@ -63,22 +66,6 @@
                             $('.loader-ajax-search').addClass('show');
                             $('.content-ajax-search').addClass('show');
 
-                            // *** بخش مهم برای برنامه‌نویس ASP.NET ***
-                            // این بخش قبلاً به فایل PHP وردپرس وصل می‌شد.
-                            // شما باید اینجا یک دستور $.ajax به کنترلر خودتان بنویسید.
-                            // مثلا: url: '/Product/SearchJson',
-
-                            /* $.ajax({
-                                url: '/Home/Search', // آدرس اکشن شما در کنترلر
-                                type: 'GET', // معمولا جستجو GET است
-                                data: { keyword: query },
-                                success: function (data) {
-                                    $('#datafetch').html(data);
-                                }
-                            });
-                            */
-
-                           // فعلا برای اینکه ارور ندهد فقط لودر را نشان می‌دهد
                            console.log("Searching for: " + query + " (Need to implement API)");
 
                         }, doneTypingInterval);
@@ -96,7 +83,5 @@
     var woosw_vars = { "wc_ajax_url": "/?wc-ajax=%%endpoint%%", "nonce": "dummy_nonce", "wishlist_url": "/wishlist/", "button_action": "message", "message_position": "fluid-top", "button_action_added": "popup", "empty_confirm": "این عمل قابل بازیابی نیست. اطمینان دارید؟", "delete_confirm": "این عمل قابل بازیابی نیست. اطمینان دارید؟", "copied_text": "پیوند لیست علاقه‌مندی‌ها را کپی کنید:", "menu_text": "لیست علاقه‌مندی‌ها", "button_text": "افزودن به علاقه‌مندی‌ها", "button_text_added": "لیست علاقه‌مندی‌ها را مرور کنید", "button_normal_icon": "woosw-icon-2", "button_added_icon": "woosw-icon-8", "button_loading_icon": "woosw-icon-4" };
 
     var woo_variation_swatches_options = { "show_variation_label": "1", "clear_on_reselect": "", "variation_label_separator": ":", "is_mobile": "", "show_variation_stock": "", "stock_label_threshold": "5", "cart_redirect_after_add": "no", "enable_ajax_add_to_cart": "yes", "cart_url": "/cart/", "is_cart": "" };
-
-    // کانفیگ المنتور (اگر حذف شود ممکن است چیدمان به هم بریزد)
     var elementorFrontendConfig = { "environmentMode": { "edit": false, "wpPreview": false, "isScriptDebug": false }, "i18n": {}, "is_rtl": true, "breakpoints": { "xs": 0, "sm": 480, "md": 541, "lg": 1025, "xl": 1440, "xxl": 1600 }, "responsive": { "breakpoints": { "mobile": { "label": "حالت عمودی موبایل", "value": 540, "default_value": 767, "direction": "max", "is_enabled": true }, "mobile_extra": { "label": "حالت افقی موبایل", "value": 880, "default_value": 880, "direction": "max", "is_enabled": false }, "tablet": { "label": "حالت عمودی تبلت", "value": 1024, "default_value": 1024, "direction": "max", "is_enabled": true }, "tablet_extra": { "label": "حالت افقی تبلت", "value": 1200, "default_value": 1200, "direction": "max", "is_enabled": false }, "laptop": { "label": "لپ تاپ", "value": 1366, "default_value": 1366, "direction": "max", "is_enabled": false }, "widescreen": { "label": "صفحه عریض (Widescreen)", "value": 2400, "default_value": 2400, "direction": "min", "is_enabled": false } }, "hasCustomBreakpoints": true }, "version": "3.33.1", "is_static": false, "experimentalFeatures": { "e_font_icon_svg": true, "additional_custom_breakpoints": true, "container": true, "nested-elements": true, "home_screen": true, "global_classes_should_enforce_capabilities": true, "e_variables": true, "cloud-library": true, "e_opt_in_v4_page": true, "import-export-customization": true }, "urls": { "assets": "/wp-content/plugins/elementor/assets/" }, "settings": { "page": [], "editorPreferences": [] }, "kit": { "viewport_mobile": 540, "active_breakpoints": ["viewport_mobile", "viewport_tablet"], "global_image_lightbox": "yes", "lightbox_enable_counter": "yes", "lightbox_enable_fullscreen": "yes", "lightbox_enable_zoom": "yes", "lightbox_enable_share": "yes", "lightbox_title_src": "title", "lightbox_description_src": "description" }, "post": { "id": 247, "title": "", "excerpt": "", "featuredImage": false } };
 </script>

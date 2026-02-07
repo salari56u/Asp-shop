@@ -8,7 +8,6 @@
     public int CurrentPage { get; set; }
     public int TotalPages { get; set; }
 
-    // پارامترهای فیلتر که از سمت کاربر می‌آید
     public string Search { get; set; }
     public int? CategoryId { get; set; }
     public long? MinPrice { get; set; }

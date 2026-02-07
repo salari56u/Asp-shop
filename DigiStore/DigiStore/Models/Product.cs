@@ -17,12 +17,10 @@ public class Product
     public string? MainImageName { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-
-
-
     public ICollection<ProductImage> Images { get; set; }
     public ICollection<ProductSpecification> Specifications { get; set; }
-    public ICollection<ProductCategory> ProductCategories { get; set; }
+    public ICollection<ProductCategory> ProductCategories { get; set;}  = new List<ProductCategory>();
+
     public ICollection<Review> Reviews { get; set; }
 
 }

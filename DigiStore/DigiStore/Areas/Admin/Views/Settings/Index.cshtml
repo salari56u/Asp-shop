@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SiteSetting>
+@{
+    ViewBag.Title = "تایید حذف عضو";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="card">
+    <div class="card-header"><h4>مدیریت تنظیمات سایت</h4></div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>عنوان (Key)</th>
+                    <th>توضیحات</th>
+                    <th>مقدار</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><code>@item.Key</code></td>
+                        <td>@item.Description</td>
+                        <td>
+                            @(item.Value.Length > 50 ? item.Value.Substring(0, 50) + "..." : item.Value)
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = item.Id })" class="text-primary me-3" title="ویرایش">
+                                <i class="bx bx-pencil bx-sm"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

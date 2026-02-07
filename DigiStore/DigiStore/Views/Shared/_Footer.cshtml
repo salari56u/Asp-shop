@@ -1,74 +1,56 @@
-﻿<footer class="footer">
+﻿@using System.Text.Json
+@inject ISiteSettingService SettingService
+@{
+    var settings = await SettingService.GetAllSettings();
+    string GetSetting(string key, string defaultValue = "")
+        => settings.ContainsKey(key) ? settings[key] : defaultValue;
+}
+
+<footer class="footer">
     <div class="container">
         <div class="footer-box">
             <aside class="footer-widget first-ch">
                 <div class="f-w-content">
-                    <h3>فروشگاه موبولند</h3>			<div class="textwidget">
-                        <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد</p>
+                    <h3>@GetSetting("Footer_AboutTitle", "فروشگاه موبولند")</h3>
+                    <div class="textwidget">
+                        <p>@GetSetting("Footer_AboutText", "لورم ایپسوم متن ساختگی...")</p>
                     </div>
                 </div>
             </aside>
             <aside class="footer-widget">
                 <div class="f-w-content">
-                    <h3>خدمات مشتریان</h3>			<div class="textwidget">
+                    <h3>خدمات مشتریان</h3>
+                    <div class="textwidget">
                         <ul>
-                            <li><a href="%d8%aa%d9%85%d8%a7%d8%b3-%d8%a8%d8%a7-%d9%85%d8%a7/index.html">تماس با ما</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">روش های ارسال</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">پرسش های متداول</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">حریم خصوصی</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">شرایط و قوانین</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">رویه های بازگرداندن کالا</a></li>
+                            @{
+                                var servicesJson = GetSetting("Footer_CustomerServices", "[]");
+                                var services = JsonSerializer.Deserialize<List<FooterLink>>(servicesJson);
+                            }
+                            @if (services != null)
+                            {
+                                foreach (var link in services)
+                                {
+                                    <li><a href="@link.Url">@link.Title</a></li>
+                                }
+                            }
                         </ul>
                     </div>
                 </div>
             </aside>
-            <aside class="footer-widget">
-                <div class="f-w-content">
-                    <h3>دسترسی سریع</h3>			<div class="textwidget">
-                        <ul>
-                            <li><a href="index.html#" target="_blank" rel="noopener">راهنمای خرید</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">روش های ارسال</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">پرسش های متداول</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">حریم خصوصی</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">شرایط و قوانین</a></li>
-                            <li><a href="index.html#" target="_blank" rel="noopener">رویه های بازگرداندن کالا</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </aside>
-            <aside class="footer-widget">
-                <div class="f-w-content">
-                    <h3>مجوزهای فروشگاه</h3>			<div class="textwidget">
-                        <p><img loading="lazy" decoding="async" class="alignnone size-full wp-image-64" src="/wp-content/uploads/2024/10/per.png" alt="" width="260" height="150" /></p>
-                    </div>
-                </div>
-            </aside>
+            @functions {
+                public class FooterLink
+                {
+                    public string Title { get; set; }
+                    public string Url { get; set; }
+                }
+            }
         </div>
 
-        <div class="application">
-            <div class="right-application">
-                <img src="/wp-content/uploads/2024/11/icon-application.png" alt="">
-                <p>دانلود اپلیکیشن</p>
-            </div>
-            <div class="left-application">
-                <a href="#" target="_blank">
-                    <img src="/wp-content/themes/moboland/img/sibapp.svg" alt="">
-                </a>
-                <a href="#" target="_blank">
-                    <img src="/wp-content/themes/moboland/img/myket.svg" alt="">
-                </a>
-                <a href="#" target="_blank">
-                    <img src="/wp-content/themes/moboland/img/bazar.svg" alt="">
-                </a>
-                <a href="#" target="_blank">
-                    <img src="/wp-content/themes/moboland/img/play.svg" alt="">
-                </a>
-            </div>
-        </div>
 
         <div class="footer-line">
             <div class="footer-line-right">
-                پاسخگویی همه روزه از ساعت 9:00 الی 21:00 به غیر از روزهای جمعه | شماره تماس پشتیبانی: 09331234567
+                @GetSetting("Footer_WorkingHours", "پاسخگویی همه روزه از ساعت 9:00 الی 21:00") |
+                شماره تماس: @GetSetting("Site_Phone")
             </div>
             <div class="footer-line-left">
                 <span id="go-up">
@@ -79,54 +61,38 @@
         </div>
         <div class="footer-down">
             <div class="copyright">
-                <p>
-                    کلیه حقوق این وب سایت متعلق به فروشگاه موبولند است.
-                </p>
+                <p>@GetSetting("Footer_Copyright", "کلیه حقوق این وب سایت متعلق به فروشگاه موبولند است.")</p>
             </div>
             <div class="social-media">
-                <a href="#" target="_blank">
-                    <i class="fab fa-youtube-square"></i>
-                </a>
-                <a href="#" target="_blank">
-                    <i class="fab fa-instagram-square"></i>
-                </a>
-                <a href="#" target="_blank">
-                    <i class="fab fa-facebook-square"></i>
-                </a>
+                <a href="@GetSetting("Social_Instagram", "#")" target="_blank"><i class="fab fa-instagram-square"></i></a>
+                <a href="@GetSetting("Social_Telegram", "#")" target="_blank"><i class="fab fa-telegram"></i></a>
+                @* بقیه موارد هم به همین صورت *@
             </div>
         </div>
     </div>
     <div class="floating-contact">
         <div class="contact-list">
-            <a href="tel:#">
+            <a href="tel:@GetSetting("Site_Phone")">
                 <span>ارتباط از طریق تماس</span>
                 <img src="/wp-content/themes/moboland/img/contact/contact.svg" alt="">
             </a>
-            <a href="https://t.me/#">
+            <a href="@GetSetting("Social_Telegram")">
                 <span>ارتباط از طریق تلگرام</span>
                 <img src="/wp-content/themes/moboland/img/contact/telegram.svg" alt="">
             </a>
-            <a href="https://www.instagram.com/#">
+            <a href="@GetSetting("Social_Instagram")">
                 <span>ارتباط از طریق اینستاگرام</span>
                 <img src="/wp-content/themes/moboland/img/contact/instagram.svg" alt="">
             </a>
-            <a href="#">
+            <a href="@GetSetting("Social_Bale")">
                 <span>ارتباط از طریق بله</span>
                 <img src="/wp-content/themes/moboland/img/contact/bale.svg" alt="">
             </a>
-            <a href="mailto:#">
+            <a href="mailto:@GetSetting("Site_Email")">
                 <span>ارتباط از طریق ایمیل</span>
                 <img src="/wp-content/themes/moboland/img/contact/email.svg" alt="">
             </a>
-            <a href="#">
-                <span>ارتباط از طریق روبیکا</span>
-                <img src="/wp-content/themes/moboland/img/contact/rubika.svg" alt="">
-            </a>
-            <a href="#">
-                <span>ارتباط از طریق سروش</span>
-                <img src="/wp-content/themes/moboland/img/contact/soroush.svg" alt="">
-            </a>
-            <a href="https://wa.me/#">
+            <a href="@GetSetting("Social_WhatsApp")">
                 <span>ارتباط از طریق واتس اپ</span>
                 <img src="/wp-content/themes/moboland/img/contact/whatsup.svg" alt="">
             </a>

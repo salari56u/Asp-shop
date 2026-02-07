@@ -1,0 +1,91 @@
+﻿@model Category
+
+@{
+    ViewBag.Title = "تایید حذف دسته بندی";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
+    <div class="container-xl px-4">
+        <div class="page-header-content pt-4">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-auto mt-4">
+                    <h1 class="page-header-title">
+                        <div class="page-header-icon"><i class="bx bx-trash"></i></div>
+                        حذف دسته بندی
+                    </h1>
+                    <div class="page-header-subtitle">تایید حذف دسته بندی "@Model.Title"</div>
+                </div>
+                <div class="col-auto mt-4">
+                    <a href="@Url.Action("Index")" class="btn btn-secondary shadow-sm">
+                        <i class="bx bx-arrow-back me-1"></i> بازگشت به لیست (بدون حذف)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container-xl px-4 mt-n10">
+    <div class="card shadow-lg border-0 rounded-lg mb-4">
+        <div class="card-header bg-danger text-white p-4">
+            <h5 class="mb-0"><i class="bx bx-error-circle me-1"></i> تایید عملیات حذف</h5>
+        </div>
+        <div class="card-body p-4">
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">آیا مطمئن هستید؟</h4>
+                <p>شما در حال حذف دائمی دسته یندی زیر هستید. عکس پروفایل حذف خواهد شد. این عملیات قابل بازگشت **نیست**.</p>
+            </div>
+
+            <h5 class="mt-4 mb-3">اطلاعات دسته بندی که حذف خواهد شد:</h5>
+            <div class="row gx-4 align-items-center">
+                @* Use row/col for layout *@
+                <div class="col-md-2 text-center mb-3 mb-md-0">
+                    @* Display Image *@
+                    @if (!string.IsNullOrEmpty(Model.ImageName))
+                    {
+                        <img src="@Url.Content("/wp-content/uploads/Categories/" + Model.ImageName)" alt="@Model.Title" class="img-fluid rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div class="avatar avatar-xxl avatar-placeholder" style="width: 80px; height: 80px;">
+                            <div class="avatar-initials rounded-circle bg-gray-300 text-dark fs-1">
+                                <i class="bx bx-user"></i>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="col-md-10">
+                    <dl class="row mb-0">
+                        @* Nested dl for details *@
+                        <dt class="col-sm-3 text-sm-end fw-bold">
+                            @Html.DisplayNameFor(model => model.Title):
+                        </dt>
+                        <dd class="col-sm-9">
+                            @Html.DisplayFor(model => model.Title)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            @* Form contains only the delete button *@
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @* ID is passed via URL, no hidden ID needed here for the POST *@
+
+                <div class="form-actions mt-4 text-start border-top pt-4">
+                    @* Added border-top *@
+                    <button type="submit" class="btn btn-danger shadow-sm">
+                        <i class="bx bx-trash me-1"></i> بله، حذف کن
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary shadow-sm ms-2">
+                        <i class="bx bx-x me-1"></i> انصراف
+                    </a>
+                </div>
+            }
+        </div> @* end card-body *@
+    </div> @* end card *@
+</div> @* end container *@
+

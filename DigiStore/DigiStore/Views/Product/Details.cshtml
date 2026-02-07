@@ -1,6 +1,7 @@
-﻿@model Product
+﻿@using DigiStore.ViewModels
+@model DetailsViewModel
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = Model.product.Title;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Styles {
@@ -9,84 +10,58 @@
 <div class="container" style="padding-top: 20px; padding-bottom: 50px;">
 
 
-    <partial name="Partials/_Breadcrumb"  model="Model"/>
+    <partial name="Partials/_Breadcrumb"  model="Model.product"/>
     <div class="product-wrapper">
-        <!-- 2. اطلاعات محصول -->
         <partial name="Partials/_InfoBox" model="Model" />
-
-        <!-- 3. گالری تصاویر -->
-        <partial name="Partials/_Gallery" model="Model" />
+        <partial name="Partials/_Gallery" model="Model.product" />
     </div>
-
-    <!-- 4. تب‌ها -->
-    <partial name="Partials/_Tabs" model="Model" />
+    <partial name="Partials/_Tabs" model="Model.product" />
     
 </div>
 
 @section Scripts {
     <script>
-        // --- 1. لاجیک گالری و تعویض عکس ---
         function changeImage(src, element) {
             var mainImg = document.getElementById('main-image');
-
-            // افکت محو شدن کوتاه برای تعویض نرم
             mainImg.style.opacity = 0;
             setTimeout(() => {
                 mainImg.src = src;
                 mainImg.style.opacity = 1;
             }, 150);
-
-            // مدیریت کلاس اکتیو
             document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
         }
-
-        // --- 2. لاجیک زوم حرفه‌ای (Follow Mouse Zoom) ---
         const container = document.getElementById('zoom-container');
         const img = document.getElementById('main-image');
 
         container.addEventListener('mousemove', (e) => {
             const { left, top, width, height } = container.getBoundingClientRect();
-
-            // محاسبه موقعیت موس نسبت به باکس عکس
             const x = e.clientX - left;
             const y = e.clientY - top;
-
-            // تبدیل مختصات به درصد برای transform-origin
             const xPercent = (x / width) * 100;
             const yPercent = (y / height) * 100;
 
-            // اعمال زوم
             img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-            img.style.transform = "scale(2)"; // مقدار زوم (2 برابر)
+            img.style.transform = "scale(2)";
         });
 
         container.addEventListener('mouseleave', () => {
-            // برگشت به حالت عادی وقتی موس خارج شد
             img.style.transformOrigin = "center center";
             img.style.transform = "scale(1)";
         });
-
-        // --- 3. لاجیک تب‌ها ---
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
-
-            // مخفی کردن همه محتواها
             tabcontent = document.getElementsByClassName("tab-content");
             for (i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].style.display = "none";
                 tabcontent[i].classList.remove("active");
             }
-
-            // حذف کلاس اکتیو از همه دکمه‌ها
             tablinks = document.querySelectorAll(".custom-tabs li");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].classList.remove("active");
             }
-
-            // نمایش تب انتخاب شده
             document.getElementById(tabName).style.display = "block";
-            setTimeout(() => document.getElementById(tabName).classList.add("active"), 10); // برای انیمیشن
+            setTimeout(() => document.getElementById(tabName).classList.add("active"), 10); 
             evt.currentTarget.classList.add("active");
         }
     </script>

@@ -1,42 +1,88 @@
-﻿@model Product
-<!-- بخش جزئیات (سمت چپ) -->
-<div class="product-details">
-    <h1 class="product-title">@Model.Title</h1>
-    <span class="sku-code">Code: @Model.Id</span>
+﻿@using DigiStore.ViewModels
+@model DetailsViewModel
 
-    <div class="specs-list">
-        @if (Model.Specifications != null && Model.Specifications.Any())
+<div class="product-details">
+    <h1 class="product-title">@Model.product.Title</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="sku-code">کد: @Model.product.Id</span>
+
+        @if (Model.AverageRating > 0)
         {
-            foreach (var spec in Model.Specifications.Take(5))
+            <div class="product-rating-summary">
+                <div class="d-flex align-items-center">
+                    <div class="stars me-2">
+                        @{
+                            int fullStars = (int)Model.AverageRating;
+                            bool hasHalfStar = Model.AverageRating - fullStars >= 0.5;
+                            int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                        }
+
+                        @for (int i = 0; i < fullStars; i++)
+                        {
+                            <i class="bi bi-star-fill text-warning fs-5"></i>
+                        }
+
+                        @if (hasHalfStar)
+                        {
+                            <i class="bi bi-star-half text-warning fs-5"></i>
+                        }
+
+                        @for (int i = 0; i < emptyStars; i++)
+                        {
+                            <i class="bi bi-star text-warning fs-5"></i>
+                        }
+                    </div>
+                    <span class="rating-number fw-bold me-2 fs-5">@Model.AverageRating.ToString("0.0")</span>
+                    <a href="#comments" class="text-decoration-none" onclick="openTab(event, 'comments')">
+                        <span class="badge bg-primary">
+                            @Model.ReviewCount نظر
+                        </span>
+                    </a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-muted">
+                <i class="bi bi-star"></i>
+                <small>بدون امتیاز</small>
+            </div>
+        }
+    </div>
+    <div class="specs-list">
+        @if (Model.product.Specifications != null && Model.product.Specifications.Any())
+        {
+            foreach (var spec in Model.product.Specifications.Take(5))
             {
                 <div class="spec-item">
-                    <i class="fa-solid fa-circle"></i>
+                    <i class="fa-solid fa-circle" style="font-size: 8px; color: #ef394e; margin-left:5px;"></i>
                     <span class="spec-key">@spec.Key :</span>
                     <span class="spec-val">@spec.Value</span>
                 </div>
             }
         }
     </div>
-
-    <!-- باکس خرید اصلاح شده (بدون مثبت/منفی) -->
-    <form method="post">
-        <!-- ارسال یک عدد مخفی به عنوان تعداد پیش‌فرض -->
-        <input type="hidden" name="quantity" value="1" />
+    <form class="cart" method="post">
+        <input type="hidden" name="product_id" value="@Model.product.Id" />
 
         <div class="buy-box">
             <div class="price-row">
-                @if (Model.OldPrice.HasValue && Model.OldPrice > Model.Price)
+                @if (Model.product.OldPrice.HasValue && Model.product.OldPrice > Model.product.Price)
                 {
-                    <span class="old-price">@Model.OldPrice.Value.ToString("N0")</span>
+                    <span class="old-price">@Model.product.OldPrice.Value.ToString("N0")</span>
                 }
                 <span class="current-price">
-                    @Model.Price.ToString("N0") <span class="currency">تومان</span>
+                    @Model.product.Price.ToString("N0") <span class="currency">تومان</span>
                 </span>
             </div>
+            <div class="quantity-wrapper" style="margin: 15px 0;">
+                <label>تعداد:</label>
+                <input type="number" name="quantity" value="1" min="1" style="width: 60px; text-align: center;" />
+            </div>
 
-            @if (Model.Stock > 0)
+            @if (Model.product.Stock > 0)
             {
-                <button type="submit" class="add-to-cart-btn">
+                <button type="submit" class="add-to-cart-btn single_add_to_cart_button">
                     افزودن به سبد خرید
                 </button>
             }
@@ -48,6 +94,16 @@
             }
         </div>
     </form>
+
+
+    <div class="mt-3">
+        <button type="submit" class="single_remove_to_list_button" data-product-id="@Model.product.Id">
+            حذف از علاقه مندی ها
+        </button>
+        <button type="submit" class="single_add_to_list_button" data-product-id="@Model.product.Id">
+            افزودن به علاقه مندی ها
+        </button>
+    </div>
 
     <div class="features-row">
         <div class="feature-box">
@@ -61,3 +117,22 @@
         </div>
     </div>
 </div>
+
+<style>
+    .product-rating-summary .stars {
+        font-size: 1.2rem;
+    }
+
+    .rating-number {
+        color: #333;
+    }
+
+    .product-title {
+        margin-bottom: 0.5rem !important;
+    }
+
+    .sku-code {
+        color: #666;
+        font-size: 0.9rem;
+    }
+</style>

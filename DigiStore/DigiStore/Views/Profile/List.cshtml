@@ -1,0 +1,125 @@
+﻿@model ShopLikingViewModel
+@{
+    ViewData["Title"] = "فروشگاه";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <link href="~/css/product-Index.css" rel="stylesheet" asp-append-version="true" />
+}
+
+<div class="container">
+    <div class="woocommerce-notices-wrapper"></div>
+
+    <nav class="woocommerce-breadcrumb" aria-label="Breadcrumb">
+        <a href="/">خانه</a>&nbsp;&#47;&nbsp;فروشگاه
+    </nav>
+
+    <div class="close-menu-responsive-page-moboland"></div>
+
+    @if(Model.IsLoggedIn)
+    {
+        <section class="hero-single">
+            <div class="main-single">
+                <div class="before-shop">
+                    <p class="woocommerce-result-count">
+                        نمایش @Model.Products.Count محصول
+                    </p>
+
+                    <div class="desktop-moboland">
+                        <form class="woocommerce-ordering" method="get">
+                            <ul class="catalog-list">
+                                <i class="fa-solid fa-chart-column"></i>
+                                <span>مرتب سازی بر اساس : </span>
+
+                                <li class="list-inline-item @(Model.SortBy == "date" ? "active" : "")">
+                                    <a href="javascript:void(0)" onclick="setSort('date')">جدیدترین</a>
+                                </li>
+                                <li class="list-inline-item @(Model.SortBy == "price" ? "active" : "")">
+                                    <a href="javascript:void(0)" onclick="setSort('price')">ارزان‌ترین</a>
+                                </li>
+                                <li class="list-inline-item @(Model.SortBy == "price-desc" ? "active" : "")">
+                                    <a href="javascript:void(0)" onclick="setSort('price-desc')">گران‌ترین</a>
+                                </li>
+                            </ul>
+                            <input type="hidden" id="sort-select" name="sortBy" value="@Model.SortBy" />
+                        </form>
+                    </div>
+
+                    <div class="mobile-moboland filter-shop-page">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>فیلترهای محصولات</span>
+                    </div>
+                </div>
+                <partial name="Partials/_ProductGrid" model="Model" />
+            </div>
+        </section>
+    }else if(!Model.IsLoggedIn)
+    {
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                برای دیدن علاقه مندی ها باید
+                <a href="@Url.Action("Login", "Auth")" class="alert-link">وارد حساب کاربری</a>
+                شوید.
+            </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        jQuery(document).ready(function ($) {
+
+            console.log("Shop Script Loaded with jQuery Version:", $.fn.jquery); 
+            let searchTimeout;
+            window.setSort = function(sortValue) { 
+                $('.catalog-list li').removeClass('active');
+                $('#sort-select').val(sortValue);
+                filterProducts(1);
+            }
+            window.filterProducts = function(page = 1) {
+                $('#grid-loader').fadeIn(200);
+                $('.main-product').css('opacity', '0.5');
+
+
+                const sortBy = $('#sort-select').val() || 'date';
+
+                const params = new URLSearchParams({
+                    sortBy: sortBy,
+                    page: page
+                });
+
+                const newUrl = `${window.location.pathname}?${params.toString()}`;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+
+                $.ajax({
+                    url: newUrl,
+                    type: 'GET',
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                    success: function (result) {
+                        $('#product-grid-container').replaceWith(result);
+                        $('.main-product').css('opacity', '1');
+                    },
+                    error: function () {
+                        alert('خطا در ارتباط با سرور.');
+                        $('.main-product').css('opacity', '1');
+                    }
+                });
+            }
+            $(document).on('input', '#s', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    filterProducts(1);
+                }, 500);
+            });
+            $(document).on('submit', '.searchform, .widget_price_filter form', function (e) {
+                e.preventDefault();
+                filterProducts(1);
+            });
+            $(document).on('click', '.ajax-page-link', function (e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                filterProducts(page);
+                $('html, body').animate({ scrollTop: $(".main-single").offset().top - 100 }, 500);
+            });
+        });
+    </script>
+}

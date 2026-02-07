@@ -1,19 +1,25 @@
-﻿<header class="header desktop ">
+﻿@inject ISiteSettingService SettingService
+@{
+	var settings = await SettingService.GetAllSettings();
+	string GetSetting(string key, string defaultValue = "")
+		=> settings.ContainsKey(key) ? settings[key] : defaultValue;
+	var menuCategories = await SettingService.GetCategoriesForMenu();
+}
+
+<header class="header desktop ">
 
 	<section class="main-header">
 		<div class="container">
 			<div class="top-header">
 				<div class="top-header-right">
-					<div class="alert"></div>
-					<span>گوشی آیفون 16 توسط شرکت اپل به صورت رسمی رونمایی شد.</span>
+					<span>@GetSetting("Header_AlertText", "گوشی آیفون 16 رونمایی شد")</span>
 				</div>
 				<div class="top-header-left">
-					<span>اگر سوالی دارید با پشتیبانی در تماس باشید</span>
 					<span class="contact-header">
-						09331234567                        <i class="fas fa-headset"></i>
+						@GetSetting("Site_Phone", "09331234567") <i class="fas fa-headset"></i>
 					</span>
 				</div>
-			</div>
+			</div>	
 		</div>
 	</section>
 
@@ -22,9 +28,8 @@
 			<div class="ch-mid-header">
 				<div class="mid-header-right">
 					<div class="logo">
-						<a href="index.html">
-							<img src="/wp-content/uploads/2024/11/logo-web.webp"
-								 alt="لوگوی اصلی وب سایت">
+						<a href="/">
+							<img src="@GetSetting("Site_Logo", "/default-logo.png")" alt="لوگوی اصلی وب سایت" style="height:100px">
 						</a>
 					</div>
 					<div class="search-main">
@@ -42,34 +47,29 @@
 				</div>
 				<div class="mid-header-left">
 					<div class="fav-btn">
-						<a href="wishlist/index.html" target="_blank">
+						<a href="/Profile/List" target="_blank">
 							<i class="fa-regular fa-heart"></i>
 							<span class="text-fav-btn">
 								علاقمندی ها
 							</span>
-
 						</a>
 					</div>
+
 					<div class="cart-btn">
-						<a href="cart/index.html">
+						<a href="/Cart">
 							<span class="text-cart-btn">
 								<i class="fa-solid fa-cart-shopping"></i>
 								<span>سبد خرید</span>
 							</span>
-							<span class="cart-btn-num">
+							<span class="cart-btn-num" id="header-cart-count">
 								0
 							</span>
 						</a>
-						<div class="cart-content">
-
-
+						<div class="cart-content" id="mini-cart-container">
 							<p class="woocommerce-mini-cart__empty-message">
 								<img src="/wp-content/themes/moboland/img/shop-icon-mini.png" alt="">
 								<span class="text-empty-cart-mini">سبد خرید شما خالی است.</span>
-
 							</p>
-
-
 						</div>
 					</div>
 				</div>
@@ -86,203 +86,34 @@
 							<span>دسته بندی محصولات</span>
 						</div>
 						<div class="moboland-megamenu">
-							<ul id="menu-%d9%85%da%af%d8%a7-%d9%85%d9%86%d9%88-%d8%af%d8%b3%d8%aa%d9%87-%d8%a8%d9%86%d8%af%db%8c" class="menu">
-								<li id="menu-item-628" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-628">
-									<a href="#">موبایل</a>
-									<ul class="sub-menu">
-										<li id="menu-item-629" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-629">
-											<a href="#">گوشی موبایل</a>
+							<ul id="menu-megamenu" class="menu">
+								@foreach (var parent in menuCategories)
+								{
+									<li class="menu-item menu-item-has-children">
+										<a href="@Url.Action("Index", "Product", new { categoryId = parent.Id })">@parent.Title</a>
+
+										@if (parent.Children != null && parent.Children.Any())
+										{
 											<ul class="sub-menu">
-												<li id="menu-item-633" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-633"><a href="#">گوشی اپل</a></li>
-												<li id="menu-item-634" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-634"><a href="#">گوشی سامسونگ</a></li>
-												<li id="menu-item-635" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-635"><a href="#">گوشی شیائومی</a></li>
-												<li id="menu-item-636" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-636"><a href="#">گوشی نوکیا</a></li>
-												<li id="menu-item-637" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-637"><a href="#">گوشی آنر</a></li>
-												<li id="menu-item-638" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-638"><a href="#">گوشی ریلمی</a></li>
+												@foreach (var child in parent.Children)
+												{
+													<li class="menu-item">
+														<a href="/Category/@child.Id">@child.Title</a>
+													</li>
+												}
 											</ul>
-										</li>
-										<li id="menu-item-630" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-630">
-											<a href="#">گوشی بر اساس عملکرد</a>
-											<ul class="sub-menu">
-												<li id="menu-item-639" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-639"><a href="#">گوشی ساده</a></li>
-												<li id="menu-item-640" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-640"><a href="#">گوشی گیمینگ</a></li>
-												<li id="menu-item-641" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-641"><a href="#">گوشی عکاسی</a></li>
-												<li id="menu-item-642" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-642"><a href="#">گوشی با باتری قوی</a></li>
-												<li id="menu-item-643" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-643"><a href="#">گوشی 5G</a></li>
-												<li id="menu-item-644" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-644"><a href="#">گوشی پرچمدار</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-631" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-631">
-											<a href="#">گوشی بر اساس حافظه</a>
-											<ul class="sub-menu">
-												<li id="menu-item-647" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-647"><a href="#">گوشی تا 64 گیگ</a></li>
-												<li id="menu-item-646" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-646"><a href="#">گوشی 128 گیگ</a></li>
-												<li id="menu-item-648" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-648"><a href="#">گوشی 256 گیگ</a></li>
-												<li id="menu-item-649" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-649"><a href="#">گوشی 512 گیگ</a></li>
-												<li id="menu-item-650" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-650"><a href="#">گوشی 1 ترابایت</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-632" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-632">
-											<a href="#">گوشی بر اساس قیمت</a>
-											<ul class="sub-menu">
-												<li id="menu-item-651" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-651"><a href="#">گوشی تا 5 میلیون تومان</a></li>
-												<li id="menu-item-652" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-652"><a href="#">گوشی تا 10 میلیون تومان</a></li>
-												<li id="menu-item-653" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-653"><a href="#">گوشی تا 15 میلیون تومان</a></li>
-												<li id="menu-item-654" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-654"><a href="#">گوشی تا 20 میلیون تومان</a></li>
-												<li id="menu-item-655" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-655"><a href="#">گوشی تا 30 میلیون تومان</a></li>
-												<li id="menu-item-656" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-656"><a href="#">گوشی تا 40 میلیون تومان</a></li>
-												<li id="menu-item-657" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-657"><a href="#">گوشی از 40 میلیون به بالا</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li id="menu-item-940" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-940">
-									<a href="#">کالای دیجیتال</a>
-									<ul class="sub-menu">
-										<li id="menu-item-939" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-939">
-											<a href="#">لپ تاپ</a>
-											<ul class="sub-menu">
-												<li id="menu-item-941" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-941"><a href="#">ایسوس</a></li>
-												<li id="menu-item-942" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-942"><a href="#">لنوو</a></li>
-												<li id="menu-item-943" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-943"><a href="#">مک بوک</a></li>
-												<li id="menu-item-944" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-944"><a href="#">اچ پی</a></li>
-												<li id="menu-item-945" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-945"><a href="#">دل</a></li>
-												<li id="menu-item-946" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-946"><a href="#">ایسر</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-947" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-947">
-											<a href="#">هدفون</a>
-											<ul class="sub-menu">
-												<li id="menu-item-948" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-948"><a href="#">هدفون بی سیم</a></li>
-												<li id="menu-item-949" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-949"><a href="#">هدفون اپل</a></li>
-												<li id="menu-item-950" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-950"><a href="#">هدفون بیتس</a></li>
-												<li id="menu-item-951" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-951"><a href="#">هدفون سونی</a></li>
-												<li id="menu-item-952" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-952"><a href="#">هدفون سامسونگ</a></li>
-												<li id="menu-item-953" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-953"><a href="#">هدفون شیائومی</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-954" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-954">
-											<a href="#">ساعت و مچ بند هوشمند</a>
-											<ul class="sub-menu">
-												<li id="menu-item-955" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-955"><a href="#">ساعت هوشمند سامسونگ</a></li>
-												<li id="menu-item-956" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-956"><a href="#">ساعت هوشمند شیائومی</a></li>
-												<li id="menu-item-957" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-957"><a href="#">اپل واچ</a></li>
-												<li id="menu-item-958" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-958"><a href="#">بند اپل واچ</a></li>
-												<li id="menu-item-959" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-959"><a href="#">لوازم جانبی ساعت هوشمند</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-960" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-960">
-											<a href="#">کنسول بازی</a>
-											<ul class="sub-menu">
-												<li id="menu-item-961" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-961"><a href="#">PS5</a></li>
-												<li id="menu-item-962" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-962"><a href="#">Xbox 360</a></li>
-												<li id="menu-item-963" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-963"><a href="#">Xbox one</a></li>
-												<li id="menu-item-964" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-964"><a href="#">PS4</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li id="menu-item-965" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-965">
-									<a href="#">لوازم خانگی برقی</a>
-									<ul class="sub-menu">
-										<li id="menu-item-966" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-966">
-											<a href="#">صوتی و تصویری</a>
-											<ul class="sub-menu">
-												<li id="menu-item-967" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-967"><a href="#">تلویزیون</a></li>
-												<li id="menu-item-968" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-968"><a href="#">ساندبار</a></li>
-												<li id="menu-item-969" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-969"><a href="#">ویدیو پروژکتور</a></li>
-												<li id="menu-item-970" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-970"><a href="#">اندروید باکس</a></li>
-												<li id="menu-item-971" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-971"><a href="#">پخش کننده خانگی</a></li>
-												<li id="menu-item-972" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-972"><a href="#">ریموت کنترل</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-973" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-973">
-											<a href="#">جاروبرقی</a>
-											<ul class="sub-menu">
-												<li id="menu-item-974" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-974"><a href="#">شیائومی</a></li>
-												<li id="menu-item-975" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-975"><a href="#">بوش</a></li>
-												<li id="menu-item-976" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-976"><a href="#">سامسونگ</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-977" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-977">
-											<a href="#">تهویه و سرمایش</a>
-											<ul class="sub-menu">
-												<li id="menu-item-978" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-978"><a href="#">تصویه هوای شیائومی</a></li>
-												<li id="menu-item-979" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-979"><a href="#">کولر اسپیلت</a></li>
-												<li id="menu-item-980" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-980"><a href="#">کولر آبی</a></li>
-												<li id="menu-item-981" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-981"><a href="#">پنکه</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li id="menu-item-982" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-982">
-									<a href="#">لوازم جانبی موبایل</a>
-									<ul class="sub-menu">
-										<li id="menu-item-983" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-983">
-											<a href="#">کیس و کاور</a>
-											<ul class="sub-menu">
-												<li id="menu-item-984" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-984"><a href="#">کیدو</a></li>
-												<li id="menu-item-985" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-985"><a href="#">کیس تیفای</a></li>
-												<li id="menu-item-986" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-986"><a href="#">کجسا</a></li>
-												<li id="menu-item-987" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-987"><a href="#">پولو</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-988" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-988">
-											<a href="#">کابل و شارژر</a>
-											<ul class="sub-menu">
-												<li id="menu-item-989" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-989"><a href="#">شارژر دیواری</a></li>
-												<li id="menu-item-990" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-990"><a href="#">شارژر فندکی</a></li>
-												<li id="menu-item-991" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-991"><a href="#">کابل دو سر تاپ سی</a></li>
-												<li id="menu-item-992" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-992"><a href="#">کابل لایتنینگ</a></li>
-												<li id="menu-item-993" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-993"><a href="#">کابل تبدیل تایپ سی</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-994" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-994">
-											<a href="#">پاور بانک</a>
-											<ul class="sub-menu">
-												<li id="menu-item-995" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-995"><a href="#">انکر</a></li>
-												<li id="menu-item-996" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-996"><a href="#">شیائومی</a></li>
-												<li id="menu-item-997" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-997"><a href="#">کاکو</a></li>
-												<li id="menu-item-998" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-998"><a href="#">بیسوس</a></li>
-												<li id="menu-item-999" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-999"><a href="#">مک دودو</a></li>
-												<li id="menu-item-1000" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1000"><a href="#">هوکو</a></li>
-											</ul>
-										</li>
-										<li id="menu-item-1001" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1001">
-											<a href="#">هندزفری بلوتوثی</a>
-											<ul class="sub-menu">
-												<li id="menu-item-1002" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1002"><a href="#">شیائومی</a></li>
-												<li id="menu-item-1003" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1003"><a href="#">بیسوس</a></li>
-												<li id="menu-item-1004" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1004"><a href="#">انکر</a></li>
-												<li id="menu-item-1005" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1005"><a href="#">سامسونگ</a></li>
-												<li id="menu-item-1007" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1007"><a href="#">هوکو</a></li>
-												<li id="menu-item-1006" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1006"><a href="#">یوسمز</a></li>
-												<li id="menu-item-1008" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1008"><a href="#">بیتس</a></li>
-											</ul>
-										</li>
-									</ul>
-								</li>
+										}
+									</li>
+								}
 							</ul>
 						</div>
 					</div>
 					<div class="menu-header">
 						<ul id="menu-%d9%85%d9%86%d9%88%db%8c-%d8%a7%d8%b5%d9%84%db%8c-%d9%88%d8%a8-%d8%b3%d8%a7%db%8c%d8%aa" class="menu">
-							<li id="menu-item-55" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-55"><a href="index.html" aria-current="page">صفحه اصلی</a></li>
-							<li id="menu-item-1085" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-1085">
-								<a href="#">دموهای اصلی</a>
-								<ul class="sub-menu">
-									<li id="menu-item-1087" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-1087"><a href="index.html" aria-current="page">صفحه نخست شماره 1</a></li>
-									<li id="menu-item-1086" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1086"><a href="https://d2.mobowebs.ir/">صفحه نخست شماره 2</a></li>
-									<li id="menu-item-1091" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1091"><a href="https://co.mobowebs.ir/">دموی شرکتی ساخت و ساز</a></li>
-									<li id="menu-item-1094" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1094"><a href="https://style.mobowebs.ir/">دموی فروشگاه پوشاک</a></li>
-								</ul>
-							</li>
+							<li id="menu-item-55" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-55"><a href="@Url.Action("Index" , "Home")" aria-current="page">صفحه اصلی</a></li>
 							<li id="menu-item-231" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-231"><a href="/Product/Index">فروشگاه</a></li>
-							<li id="menu-item-57" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-57"><a href="blog/index.html">وبلاگ</a></li>
-							<li id="menu-item-562" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-562"><a href="%d8%aa%d9%85%d8%a7%d8%b3-%d8%a8%d8%a7-%d9%85%d8%a7/index.html">تماس با ما</a></li>
-							<li id="menu-item-1020" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1020"><a href="%d8%af%d8%b1%d8%a8%d8%a7%d8%b1%d9%87-%d9%85%d8%a7/index.html">درباره ما</a></li>
-							<li id="menu-item-1066" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1066"><a href="%d8%b3%d9%88%d8%a7%d9%84%d8%a7%d8%aa-%d9%85%d8%aa%d8%af%d8%a7%d9%88%d9%84/index.html">سوالات متداول</a></li>
-							<li id="menu-item-1079" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-1079"><a rel="privacy-policy" href="%d8%b3%db%8c%d8%a7%d8%b3%d8%aa-%d8%ad%d9%81%d8%b8-%d8%ad%d8%b1%db%8c%d9%85-%d8%ae%d8%b5%d9%88%d8%b5%db%8c/index.html">قوانین و مقررات</a></li>
+							<li id="menu-item-562" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-562"><a href="@Url.Action("Index", "Home")">تماس با ما</a></li>
+							<li id="menu-item-1020" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1020"><a href="@Url.Action("Index", "Home")">درباره ما</a></li>
 						</ul>
 					</div>
 				</nav>
@@ -292,7 +123,8 @@
 				{
 					<div class="register-btn" style="border: 1px solid #2ecc71; color: #2ecc71;">
 						<i class="far fa-user"></i>
-						<span>@User.Identity.Name</span> <a href="/Account/Logout" style="margin-right: 10px; font-size: 12px; color: red;">(خروج)</a>
+						<a href="/Profile/Index"><span>@User.Identity.Name</span> </a>
+						<a href="/Account/Logout" style="margin-right: 10px; font-size: 12px; color: red;">(خروج)</a>
 					</div>
 				}
 				else
@@ -308,351 +140,3 @@
 </header>
 
 
-
-<header class="header mobile">
-
-	<section class="header-mobile">
-
-		<div class="icon-menu-mobile" id="hamburger">
-			<i class="fa-solid fa-bars"></i>
-			<span>منو</span>
-		</div>
-
-		<div class="navigation" id="menu_mobile">
-			<div class="navigation-content">
-				<i class="fas fa-xmark close_menu"></i>
-
-				<div class="tab">
-					<button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">
-						منوی
-						اصلی
-					</button>
-					<button class="tablinks" onclick="openCity(event, 'Paris')">دسته بندی محصولات</button>
-				</div>
-
-				<div id="London" class="tabcontent">
-					<ul id="menu-%d9%85%d9%86%d9%88%db%8c-%d8%a7%d8%b5%d9%84%db%8c-%d9%88%d8%a8-%d8%b3%d8%a7%db%8c%d8%aa-1" class="menu">
-						<li class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-55"><a href="index.html" aria-current="page">صفحه اصلی</a></li>
-						<li class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-1085">
-							<a href="#">دموهای اصلی</a>
-							<ul class="sub-menu">
-								<li class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-1087"><a href="index.html" aria-current="page">صفحه نخست شماره 1</a></li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1086"><a href="https://d2.mobowebs.ir/">صفحه نخست شماره 2</a></li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1091"><a href="https://co.mobowebs.ir/">دموی شرکتی ساخت و ساز</a></li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1094"><a href="https://style.mobowebs.ir/">دموی فروشگاه پوشاک</a></li>
-							</ul>
-						</li>
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-231"><a href="shop/index.html">فروشگاه</a></li>
-						<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-57"><a href="blog/index.html">وبلاگ</a></li>
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-562"><a href="%d8%aa%d9%85%d8%a7%d8%b3-%d8%a8%d8%a7-%d9%85%d8%a7/index.html">تماس با ما</a></li>
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1020"><a href="%d8%af%d8%b1%d8%a8%d8%a7%d8%b1%d9%87-%d9%85%d8%a7/index.html">درباره ما</a></li>
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1066"><a href="%d8%b3%d9%88%d8%a7%d9%84%d8%a7%d8%aa-%d9%85%d8%aa%d8%af%d8%a7%d9%88%d9%84/index.html">سوالات متداول</a></li>
-						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-1079"><a rel="privacy-policy" href="%d8%b3%db%8c%d8%a7%d8%b3%d8%aa-%d8%ad%d9%81%d8%b8-%d8%ad%d8%b1%db%8c%d9%85-%d8%ae%d8%b5%d9%88%d8%b5%db%8c/index.html">قوانین و مقررات</a></li>
-					</ul>
-				</div>
-
-				<div id="Paris" class="tabcontent">
-					<ul id="menu-%d9%85%da%af%d8%a7-%d9%85%d9%86%d9%88-%d8%af%d8%b3%d8%aa%d9%87-%d8%a8%d9%86%d8%af%db%8c-1" class="menu">
-						<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-628">
-							<a href="#">موبایل</a>
-							<ul class="sub-menu">
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-629">
-									<a href="#">گوشی موبایل</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-633"><a href="#">گوشی اپل</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-634"><a href="#">گوشی سامسونگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-635"><a href="#">گوشی شیائومی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-636"><a href="#">گوشی نوکیا</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-637"><a href="#">گوشی آنر</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-638"><a href="#">گوشی ریلمی</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-630">
-									<a href="#">گوشی بر اساس عملکرد</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-639"><a href="#">گوشی ساده</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-640"><a href="#">گوشی گیمینگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-641"><a href="#">گوشی عکاسی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-642"><a href="#">گوشی با باتری قوی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-643"><a href="#">گوشی 5G</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-644"><a href="#">گوشی پرچمدار</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-631">
-									<a href="#">گوشی بر اساس حافظه</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-647"><a href="#">گوشی تا 64 گیگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-646"><a href="#">گوشی 128 گیگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-648"><a href="#">گوشی 256 گیگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-649"><a href="#">گوشی 512 گیگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-650"><a href="#">گوشی 1 ترابایت</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-632">
-									<a href="#">گوشی بر اساس قیمت</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-651"><a href="#">گوشی تا 5 میلیون تومان</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-652"><a href="#">گوشی تا 10 میلیون تومان</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-653"><a href="#">گوشی تا 15 میلیون تومان</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-654"><a href="#">گوشی تا 20 میلیون تومان</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-655"><a href="#">گوشی تا 30 میلیون تومان</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-656"><a href="#">گوشی تا 40 میلیون تومان</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-657"><a href="#">گوشی از 40 میلیون به بالا</a></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-						<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-940">
-							<a href="#">کالای دیجیتال</a>
-							<ul class="sub-menu">
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-939">
-									<a href="#">لپ تاپ</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-941"><a href="#">ایسوس</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-942"><a href="#">لنوو</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-943"><a href="#">مک بوک</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-944"><a href="#">اچ پی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-945"><a href="#">دل</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-946"><a href="#">ایسر</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-947">
-									<a href="#">هدفون</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-948"><a href="#">هدفون بی سیم</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-949"><a href="#">هدفون اپل</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-950"><a href="#">هدفون بیتس</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-951"><a href="#">هدفون سونی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-952"><a href="#">هدفون سامسونگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-953"><a href="#">هدفون شیائومی</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-954">
-									<a href="#">ساعت و مچ بند هوشمند</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-955"><a href="#">ساعت هوشمند سامسونگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-956"><a href="#">ساعت هوشمند شیائومی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-957"><a href="#">اپل واچ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-958"><a href="#">بند اپل واچ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-959"><a href="#">لوازم جانبی ساعت هوشمند</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-960">
-									<a href="#">کنسول بازی</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-961"><a href="#">PS5</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-962"><a href="#">Xbox 360</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-963"><a href="#">Xbox one</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-964"><a href="#">PS4</a></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-						<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-965">
-							<a href="#">لوازم خانگی برقی</a>
-							<ul class="sub-menu">
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-966">
-									<a href="#">صوتی و تصویری</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-967"><a href="#">تلویزیون</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-968"><a href="#">ساندبار</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-969"><a href="#">ویدیو پروژکتور</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-970"><a href="#">اندروید باکس</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-971"><a href="#">پخش کننده خانگی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-972"><a href="#">ریموت کنترل</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-973">
-									<a href="#">جاروبرقی</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-974"><a href="#">شیائومی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-975"><a href="#">بوش</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-976"><a href="#">سامسونگ</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-977">
-									<a href="#">تهویه و سرمایش</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-978"><a href="#">تصویه هوای شیائومی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-979"><a href="#">کولر اسپیلت</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-980"><a href="#">کولر آبی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-981"><a href="#">پنکه</a></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-						<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-982">
-							<a href="#">لوازم جانبی موبایل</a>
-							<ul class="sub-menu">
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-983">
-									<a href="#">کیس و کاور</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-984"><a href="#">کیدو</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-985"><a href="#">کیس تیفای</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-986"><a href="#">کجسا</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-987"><a href="#">پولو</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-988">
-									<a href="#">کابل و شارژر</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-989"><a href="#">شارژر دیواری</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-990"><a href="#">شارژر فندکی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-991"><a href="#">کابل دو سر تاپ سی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-992"><a href="#">کابل لایتنینگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-993"><a href="#">کابل تبدیل تایپ سی</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-994">
-									<a href="#">پاور بانک</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-995"><a href="#">انکر</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-996"><a href="#">شیائومی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-997"><a href="#">کاکو</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-998"><a href="#">بیسوس</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-999"><a href="#">مک دودو</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1000"><a href="#">هوکو</a></li>
-									</ul>
-								</li>
-								<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1001">
-									<a href="#">هندزفری بلوتوثی</a>
-									<ul class="sub-menu">
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1002"><a href="#">شیائومی</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1003"><a href="#">بیسوس</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1004"><a href="#">انکر</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1005"><a href="#">سامسونگ</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1007"><a href="#">هوکو</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1006"><a href="#">یوسمز</a></li>
-										<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1008"><a href="#">بیتس</a></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-
-			</div>
-		</div>
-
-		<div class="logo">
-			<a href="index.html">
-				<img src="/wp-content/themes/moboland/img/logo-web.webp"
-					 alt="لوگوی اصلی وب سایت">
-			</a>
-		</div>
-
-
-		<div class="register-btn" id="btn_modal_login2">
-			<i class="far fa-circle-user"></i>
-			<span>ورود/ثبت نام</span>
-		</div>
-
-
-
-	</section>
-
-
-	<section class="menu-bottom-mobile">
-		<div>
-			<a href="index.html">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="22px" height="22px">
-					<path d="M 23.951172 4 A 1.50015 1.50015 0 0 0 23.072266 4.3222656 L 8.859375 15.519531 C 7.0554772 16.941163 6 19.113506 6 21.410156 L 6 40.5 C 6 41.863594 7.1364058 43 8.5 43 L 18.5 43 C 19.863594 43 21 41.863594 21 40.5 L 21 30.5 C 21 30.204955 21.204955 30 21.5 30 L 26.5 30 C 26.795045 30 27 30.204955 27 30.5 L 27 40.5 C 27 41.863594 28.136406 43 29.5 43 L 39.5 43 C 40.863594 43 42 41.863594 42 40.5 L 42 21.410156 C 42 19.113506 40.944523 16.941163 39.140625 15.519531 L 24.927734 4.3222656 A 1.50015 1.50015 0 0 0 23.951172 4 z M 24 7.4101562 L 37.285156 17.876953 C 38.369258 18.731322 39 20.030807 39 21.410156 L 39 40 L 30 40 L 30 30.5 C 30 28.585045 28.414955 27 26.5 27 L 21.5 27 C 19.585045 27 18 28.585045 18 30.5 L 18 40 L 9 40 L 9 21.410156 C 9 20.030807 9.6307412 18.731322 10.714844 17.876953 L 24 7.4101562 z"></path>
-				</svg>
-				<span>خانه</span>
-			</a>
-		</div>
-		<div class="search-menu-bottom-mobile">
-			<a>
-				<svg width="22px" height="22px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M16.6725 16.6412L21 21M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
-						  stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-				</svg>
-				<span>جستجو</span>
-			</a>
-		</div>
-		<div>
-			<a href="shop/index.html">
-				<svg width="22px" height="22px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#000000"
-					 class="bi bi-shop-window">
-					<path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h12V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5zm2 .5a.5.5 0 0 1 .5.5V13h8V9.5a.5.5 0 0 1 1 0V13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a.5.5 0 0 1 .5-.5z" />
-				</svg>
-				<span>فروشگاه</span>
-			</a>
-		</div>
-
-		<div>
-			<a href="wishlist/index.html">
-				<svg width="22px" height="22px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path fill-rule="evenodd" clip-rule="evenodd"
-						  d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z"
-						  stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-				</svg>
-				<span>علاقه مندی</span>
-			</a>
-		</div>
-		<div>
-			<a href="cart/index.html">
-				<svg width="22px" height="22px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-					<defs>
-						<style>
-							.cls-1 {
-								fill: none;
-								stroke: #020202;
-								stroke-miterlimit: 10;
-								stroke-width: 1.91px;
-							}</style>
-					</defs>
-					<g id="handbag">
-						<path class="cls-1"
-							  d="M3.41,7.23H20.59a0,0,0,0,1,0,0v12a3.23,3.23,0,0,1-3.23,3.23H6.64a3.23,3.23,0,0,1-3.23-3.23v-12A0,0,0,0,1,3.41,7.23Z" />
-						<path class="cls-1"
-							  d="M8.18,10.09V5.32A3.82,3.82,0,0,1,12,1.5h0a3.82,3.82,0,0,1,3.82,3.82v4.77" />
-					</g>
-				</svg>
-				<span>سبد خرید</span>
-			</a>
-		</div>
-
-
-	</section>
-
-
-
-
-	<div class="search-mobile">
-		<header>
-			<h4>جستجوی محصولات</h4>
-			<span id="close_search_mobile"><i class="fa fa-multiply"></i>بازگشت</span>
-		</header>
-
-		<div class="search-mobile-inner">
-			<form action="https://mobowebs.ir/" method="get" class="search-mobile-form">
-				<input class="search-input ajax-search" name="s" type="search" placeholder="جستجو در محصولات" value="">
-				<button type="submit">
-					<i class="fa-solid fa-magnifying-glass"></i>
-				</button>
-			</form>
-
-			<div class="search-mobile-loader loader-ajax-search">
-				<span class="loader"></span>
-			</div>
-
-			<div id="datafetch" class="search-mobile-results content-ajax-search"></div>
-		</div>
-
-		<div class="search-text">
-			<svg width="70px" height="70px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path fill-rule="evenodd" clip-rule="evenodd"
-					  d="M1 5C1 3.34315 2.34315 2 4 2H8.43845C9.81505 2 11.015 2.93689 11.3489 4.27239L11.7808 6H13.5H20C21.6569 6 23 7.34315 23 9V11C23 11.5523 22.5523 12 22 12C21.4477 12 21 11.5523 21 11V9C21 8.44772 20.5523 8 20 8H13.5H11.7808H4C3.44772 8 3 8.44772 3 9V10V19C3 19.5523 3.44772 20 4 20H9C9.55228 20 10 20.4477 10 21C10 21.5523 9.55228 22 9 22H4C2.34315 22 1 20.6569 1 19V10V9V5ZM3 6.17071C3.31278 6.06015 3.64936 6 4 6H9.71922L9.40859 4.75746C9.2973 4.3123 8.89732 4 8.43845 4H4C3.44772 4 3 4.44772 3 5V6.17071ZM20.1716 18.7574C20.6951 17.967 21 17.0191 21 16C21 13.2386 18.7614 11 16 11C13.2386 11 11 13.2386 11 16C11 18.7614 13.2386 21 16 21C17.0191 21 17.967 20.6951 18.7574 20.1716L21.2929 22.7071C21.6834 23.0976 22.3166 23.0976 22.7071 22.7071C23.0976 22.3166 23.0976 21.6834 22.7071 21.2929L20.1716 18.7574ZM13 16C13 14.3431 14.3431 13 16 13C17.6569 13 19 14.3431 19 16C19 17.6569 17.6569 19 16 19C14.3431 19 13 17.6569 13 16Z"
-					  fill="#000000" />
-			</svg>
-			<span>محصول مورد نظر خود را جستجو کنید</span>
-		</div>
-	</div>
-
-
-
-
-
-
-</header>

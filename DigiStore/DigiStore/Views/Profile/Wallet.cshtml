@@ -1,0 +1,283 @@
+﻿@model WalletDetailsViewModel
+@{
+    ViewData["Title"] = "کیف پول";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="bi bi-wallet2 text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="text-muted mb-2">موجودی کیف پول</h4>
+                    <h1 class="fw-bold text-success mb-3">
+                        @Model.Balance.ToString("N0") <small class="fs-4">تومان</small>
+                    </h1>
+                    <button onclick="updateBalance()" class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-arrow-clockwise"></i> به‌روزرسانی
+                    </button>
+                </div>
+            </div>
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-plus-circle text-primary me-2"></i>
+                        افزایش سریع موجودی
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        @foreach (var amount in new[] { 10000, 50000, 100000, 200000 })
+                        {
+                            <div class="col-6 col-md-3">
+                                <button onclick="addCredit(@amount)"
+                                        class="btn btn-outline-primary w-100 py-3">
+                                    @amount.ToString("N0") تومان
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    <div class="mt-4">
+                        <label class="form-label">مبلغ دلخواه (تومان)</label>
+                        <div class="input-group">
+                            <input type="number" id="customAmount"
+                                   class="form-control"
+                                   placeholder="مثال: 50000"
+                                   min="1000" max="10000000">
+                            <button onclick="addCustomCredit()"
+                                    class="btn btn-primary">
+                                افزایش
+                            </button>
+                        </div>
+                        <small class="text-muted">حداقل 1,000 و حداکثر 10,000,000 تومان</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow border-0 rounded-4 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-credit-card text-warning me-2"></i>
+                        شبیه‌سازی درگاه پرداخت
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        این یک درگاه پرداخت آزمایشی است. شانس موفقیت پرداخت: ۹۰٪
+                    </p>
+
+                    <div class="mb-3">
+                        <input type="number" id="paymentAmount"
+                               class="form-control form-control-lg"
+                               value="50000" min="1000">
+                    </div>
+
+                    <button onclick="processFakePayment()"
+                            class="btn btn-warning w-100 py-3">
+                        <i class="bi bi-credit-card me-2"></i>
+                        پرداخت از طریق درگاه فیک
+                    </button>
+
+                    <div id="paymentResult" class="mt-3"></div>
+                </div>
+            </div>
+            @if (Model.Transactions.Any())
+            {
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history me-2"></i>
+                            آخرین تراکنش‌ها
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            @foreach (var transaction in Model.Transactions)
+                            {
+                                <div class="list-group-item border-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">@transaction.Description</h6>
+                                            <small class="text-muted">@transaction.CreatedAt.ToString("yyyy/MM/dd HH:mm")</small>
+                                        </div>
+                                        <div>
+                                            <span class="@(transaction.Amount > 0 ? "text-success" : "text-danger") fw-bold">
+                                                @(transaction.Amount > 0 ? "+" : "")@transaction.Amount.ToString("N0") تومان
+                                            </span>
+                                            <br>
+                                            <small class="badge @(transaction.Type == WalletTransactionType.Deposit ? "bg-success" : "bg-danger")">
+                                                @transaction.Type
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function getAntiForgeryToken() {
+            return document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+        }
+        async function addCredit(amount) {
+            if (!confirm(`آیا مایل به افزایش ${amount.toLocaleString()} تومان هستید؟`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('@Url.Action("AddCredit", "Profile")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: amount,
+                        description: 'افزایش اعتبار سریع'
+                    })
+                });
+
+                const result = await response.json();
+                console.log('AddCredit Result:', result); 
+
+                if (result.success) {
+                    alert('✅ ' + result.message);
+                    if (result.trackingCode) {
+                        alert('کد رهگیری: ' + result.trackingCode);
+                    }
+                    location.reload(); 
+                } else {
+                    let errorMsg = '❌ خطا در افزایش موجودی';
+                    if (result.message) errorMsg += ': ' + result.message;
+                    if (result.errors) errorMsg += '\n' + result.errors.join('\n');
+                    alert(errorMsg);
+                }
+            } catch (error) {
+                console.error('AddCredit Error:', error);
+                alert('❌ خطا در ارتباط با سرور. لطفا کنسول مرورگر را بررسی کنید.');
+            }
+        }
+        function addCustomCredit() {
+            const amountInput = document.getElementById('customAmount');
+            const amount = amountInput?.value;
+
+            if (!amount || amount < 1000) {
+                alert('❌ لطفا مبلغ معتبر وارد کنید (حداقل 1,000 تومان)');
+                return;
+            }
+
+            addCredit(parseFloat(amount));
+        }
+        async function processFakePayment() {
+            const amountInput = document.getElementById('paymentAmount');
+            const amount = amountInput?.value;
+
+            if (!amount || amount < 1000) {
+                alert('❌ لطفا مبلغ معتبر وارد کنید (حداقل 1,000 تومان)');
+                return;
+            }
+
+            const resultDiv = document.getElementById('paymentResult');
+            resultDiv.innerHTML = `
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <span>در حال اتصال به درگاه پرداخت...</span>
+                    </div>
+                </div>
+            `;
+
+            try {
+                const response = await fetch('@Url.Action("FakePayment", "Profile")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: parseFloat(amount),
+                        paymentMethod: 'FakeGateway'
+                    })
+                });
+
+                const result = await response.json();
+                console.log('FakePayment Result:', result);
+
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <strong>✅ پرداخت موفق!</strong><br>
+                            ${result.message}<br>
+                            ${result.paymentId ? 'کد پیگیری: ' + result.paymentId + '<br>' : ''}
+                            موجودی جدید: ${result.newBalance ? result.newBalance.toLocaleString() + ' تومان' : '---'}
+                        </div>
+                    `;
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="bi bi-x-circle-fill me-2"></i>
+                            <strong>❌ پرداخت ناموفق!</strong><br>
+                            ${result.message || 'خطای نامشخص'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('FakePayment Error:', error);
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-x-circle-fill me-2"></i>
+                        ❌ خطا در پردازش درگاه پرداخت. لطفا کنسول مرورگر را بررسی کنید.
+                    </div>
+                `;
+            }
+        }
+        async function updateBalance() {
+            try {
+                const response = await fetch('@Url.Action("GetWalletBalance", "Profile")');
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`💰 موجودی فعلی: ${result.balance.toLocaleString()} تومان`);
+                } else {
+                    alert('❌ خطا در دریافت موجودی');
+                }
+            } catch (error) {
+                alert('❌ خطا در ارتباط با سرور');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const quickButtons = document.querySelectorAll('button[onclick^="addCredit("]');
+            quickButtons.forEach(btn => {
+                const oldOnClick = btn.getAttribute('onclick');
+                btn.removeAttribute('onclick');
+                btn.addEventListener('click', function() {
+                    const amountMatch = oldOnClick.match(/addCredit\((\d+)\)/);
+                    if (amountMatch) {
+                        addCredit(parseInt(amountMatch[1]));
+                    }
+                });
+            });
+            const customBtn = document.querySelector('button[onclick="addCustomCredit()"]');
+            if (customBtn) {
+                customBtn.removeAttribute('onclick');
+                customBtn.addEventListener('click', addCustomCredit);
+            }
+            const fakePaymentBtn = document.querySelector('button[onclick="processFakePayment()"]');
+            if (fakePaymentBtn) {
+                fakePaymentBtn.removeAttribute('onclick');
+                fakePaymentBtn.addEventListener('click', processFakePayment);
+            }
+        });
+    </script>
+}

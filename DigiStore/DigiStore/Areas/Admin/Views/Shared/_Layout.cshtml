@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html lang="fa">
+
+<!-- Mirrored from joohar.ir/sadminV1/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 03 Jun 2025 16:55:41 GMT -->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>پنل مدیریتی </title>
+    @*<link rel="stylesheet" href="assets/css/fonts.css">
+
+        <link rel="stylesheet" href="assets/css/style.css">*@
+    <link rel="stylesheet" href="/Admin/css/boxicons.css">
+    <link rel="stylesheet" href="/Admin/css/style.css">
+    <link rel="stylesheet" href="/Admin/css/fonts.css">
+
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="nav-fixed">
+
+    <nav class="is-rtl topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white" id="snavAccordion">
+        <button class="btn btn-icon btn-transparent-dark order-1 order-lg-0 me-2 ms-lg-2 me-lg-0" id="sidebarToggle">
+            <i class="bx bx-menu bx-sm"></i>
+        </button>
+        <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="index.html">داشبورد مدیریتی</a>
+        <form class="form-inline me-auto d-none d-lg-block me-3">
+            <div class="input-group input-group-joined input-group-solid">
+                <input class="form-control pe-0" type="search" placeholder="جستجو ..." aria-label="جستجو">
+                <div class="input-group-text"><i class="bx bx-search bx-sm"></i></div>
+            </div>
+        </form>
+
+        <!-- Navbar Items-->
+        <ul class="navbar-nav align-items-center ms-auto">
+
+            <!-- Documentation Dropdown-->
+            <li class="nav-item dropdown no-caret d-none d-md-block me-3">
+                @*<a class="nav-link dropdown-toggle" id="navbarDropdownDocs" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="fw-500">راهنما</div>
+                    <i class="bx bx-chevron-down bx-sm"></i>
+                </a>*@
+                <div class="dropdown-menu dropdown-menu-w15 dropdown-menu-start py-0 ms-sm-n15 ms-lg-0 o-hidden animated--fade-in-up" aria-labelledby="navbarDropdownDocs">
+                    <a class="dropdown-item py-3" href="#" target="_blank">
+
+                        @*<div>
+                            <div class="small text-gray-500">راهنما</div>
+                            نحوه استفاده از قالب
+                        </div>*@
+                    </a>
+                    <div class="dropdown-divider m-0"></div>
+                    <a class="dropdown-item py-3" href="#" target="_blank">
+
+                        <div>
+                            <div class="small text-gray-500">کامپوننت ها</div>
+                            لیست تمام کامپوننت ها
+                        </div>
+                    </a>
+                    <div class="dropdown-divider m-0"></div>
+                    <a class="dropdown-item py-3" href="#" target="_blank">
+
+                        <div>
+                            <div class="small text-gray-500">لیست تغییرات</div>
+                            بروزرسانی های صورت گرفته
+                        </div>
+                    </a>
+                </div>
+            </li>
+            <!-- User Dropdown-->
+            <!-- User Dropdown-->
+            <li class="nav-item dropdown no-caret dropdown-user me-3 me-lg-4">
+                <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img class="img-fluid" src="/Content/Home/images/icon.png">
+                </a>
+                <div class="dropdown-menu dropdown-menu-w15 dropdown-menu-end border-0 shadow animated--fade-in-up" aria-labelledby="navbarDropdownUserImage">
+
+                    <!-- هدر دراپ‌داون (اختیاری: نمایش نام کاربر) -->
+                    <h6 class="dropdown-header d-flex align-items-center">
+                        <img class="dropdown-user-img" src="/Content/Home/images/icon.png">
+                        <div class="dropdown-user-details">
+                            <div class="dropdown-user-details-name">@User.Identity?.Name</div>
+                            <div class="dropdown-user-details-email">مدیر سیستم</div>
+                        </div>
+                    </h6>
+
+                    <div class="dropdown-divider"></div>>
+
+                    <div class="dropdown-divider"></div>
+
+                    <!-- فرم خروج -->
+                    @using (Html.BeginForm("Logout", "Account", new { area = "Admin" }, FormMethod.Post, true, new { id = "logoutForm", style = "margin:0; padding:0;" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @* لینکی که با کلیک روی آن، فرم سابمیت می‌شود *@
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="document.getElementById('logoutForm').submit();">
+                            <div class="dropdown-item-icon"><i class="bx bx-log-out"></i></div>
+                            خروج از حساب
+                        </a>
+                    }
+                </div>
+            </li>
+
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="snav shadow-right snav-light">
+                <div class="snav-menu">
+                    <div class="nav accordion" id="accordionSidenav">
+
+
+                        <div class="snav-menu-heading d-sm-none">حساب کاربری</div>
+
+                        <!-- اعلان ها -->
+                        <a class="nav-link d-sm-none" href="#">
+                            <div class="nav-link-icon"><i class="bx bx-bell "></i></div>
+                            اعلان ها
+                            <span class="badge bg-warning-soft text-warning ms-auto">4 جدید!</span>
+                        </a>
+
+                        <!-- پیام ها -->
+                        <a class="nav-link d-sm-none" href="#">
+                            <div class="nav-link-icon"><i class="bx bx-envelope"></i></div>
+                            پیام ها
+                            <span class="badge bg-success-soft text-success ms-auto">2 جدید!</span>
+                        </a>
+
+
+                        <div class="snav-menu-heading">هسته</div>
+
+                        <!-- پیشخوان -->
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">صفحه ی اصلی </a>
+                        <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDashboards" aria-expanded="false" aria-controls="collapseDashboards">
+                            <div class="nav-link-icon"><i class="bx bx-pulse"></i></div>
+                            داشبورد
+                            <div class="snav-collapse-arrow"><i class="bx bx-chevron-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseDashboards" data-bs-parent="#accordionSidenav">
+                            <nav class="snav-menu-nested nav accordion" id="accordionSidenavPages">
+                                <a class="nav-link" href="@Url.Action("Index", "Users")">
+                                  مدیریت کاربران
+                                </a>
+                                <a class="nav-link" href="@Url.Action("Index", "Categories")">مدیریت دسته بندی های</a>
+                                <a class="nav-link" href="@Url.Action("Index", "Product")">مدیریت محصولات </a>
+                                <a class="nav-link" href="@Url.Action("Index", "Settings")">مدیریت محتوای هدر و فوتر</a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+
+
+
+            <main class="is-rtl">
+                <header class="py-10 mb-4 bg-gradient-primary-to-secondary">
+                    <div class="container-xl px-4">
+                        <div class="text-center">
+                            <h1 class="text-white">به داشبورد مدیریتی موبولند خوش آمدید</h1>
+                        </div>
+                    </div>
+                </header>
+                <!-- Main page content-->
+                <div class="container-xl px-4">
+                    @RenderBody();
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <!--<script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/scripts.js"></script>-->
+    <!-- chartsJs -->
+    <!--<script src="assets/js/chart/Chart.min.js"></script>
+    <script src="assets/js/chart/chart-area.js"></script>
+    <script src="assets/js/chart/chart-pie.js"></script>
+
+
+
+    <script src="assets/js/simple-datatables%40latest.js"></script>
+    <script src="assets/js/simple-datatables%40demo.js"></script>-->
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="/Admin/js/bootstrap.bundle.min.js"></script>
+    <script src="/Admin/js/scripts.js"></script>
+    <script src="/Admin/js/chart/Chart.min.js"></script>
+    <script src="/Admin/js/chart/chart-area.js"></script>
+    <script src="/Admin/js/chart/chart-pie.js"></script>
+    <script src="/Admin/js/simple-datatables%40latest.js"></script>
+    <script src="/Admin/js/simple-datatables%40demo.js"></script>
+</body>
+
+<!-- Mirrored from joohar.ir/sadminV1/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 03 Jun 2025 16:56:53 GMT -->
+</html>

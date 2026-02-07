@@ -72,7 +72,6 @@
     function sendOtp() {
         var mobile = $('#login_mobile').val();
 
-        // اعتبار سنجی ساده
         if (mobile.length !== 11 || !mobile.startsWith("09")) {
             $('#login-message').text("شماره موبایل معتبر نیست.");
             return;
@@ -86,7 +85,6 @@
             data: { phoneNumber: mobile },
             success: function (response) {
                 if (response.success) {
-                    // تغییر به مرحله دوم
                     $('#step-1-mobile').slideUp();
                     $('#step-2-code').slideDown();
                     $('#mobile-display').text(mobile);
@@ -121,7 +119,6 @@
             success: function (response) {
                 if (response.success) {
                     $('#login-message').text("ورود موفقیت آمیز!").css('color', 'green');
-                    // رفرش صفحه برای اعمال لاگین
                     location.reload();
                 } else {
                     $('#login-message').text(response.message).css('color', 'red');

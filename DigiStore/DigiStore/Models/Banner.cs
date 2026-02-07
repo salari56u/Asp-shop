@@ -11,7 +11,7 @@ namespace DigiStore.Models
 
         public string? Link { get; set; }
 
-        public string Position { get; set; } // مثلا: "CenterWide", "LeftSmall"
+        public string Position { get; set; } 
 
         public bool IsActive { get; set; } = true;
     }

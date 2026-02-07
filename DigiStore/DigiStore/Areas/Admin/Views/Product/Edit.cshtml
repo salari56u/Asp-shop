@@ -1,0 +1,203 @@
+﻿@model ProductCreateViewModel
+@{
+    ViewBag.Title = "ویرایش محصول";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    string imagePath = "/wp-content/uploads/2025/01/";
+}
+
+<div class="container-xl mt-4">
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            @using (Html.BeginForm("Edit", "Product", FormMethod.Post,
+                new { enctype = "multipart/form-data", area = "Admin", id = ViewBag.ProductId }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Title)
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Slug)
+                    @Html.TextBoxFor(m => m.Slug, new { @class = "form-control" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Description)
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4 })
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        @Html.LabelFor(m => m.Price)
+                        @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        @Html.LabelFor(m => m.OldPrice)
+                        @Html.TextBoxFor(m => m.OldPrice, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        @Html.LabelFor(m => m.Stock)
+                        @Html.TextBoxFor(m => m.Stock, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                @if (ViewBag.CurrentImage != null)
+                {
+                    <div class="mb-3">
+                        <label>تصویر فعلی:</label><br />
+                        <img src="@imagePath@ViewBag.CurrentImage" width="150" />
+                    </div>
+                }
+
+               @if (Model.ExistingImages.Any())
+                    {
+                        <div class="mb-3">
+                            <label>تصاویر گالری</label>
+                            <div class="row">
+                                @foreach (var img in Model.ExistingImages)
+                                {
+                                    <div class="col-md-2 text-center mb-2">
+                                        <img src="@imagePath@img.Url" class="img-thumbnail" />
+                                        <button type="button"
+                                                class="btn btn-sm btn-danger mt-1"
+                                                onclick="deleteImage(@img.Id)">
+                                            حذف
+                                        </button>
+
+                                        @if (!img.IsPrimary)
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-sm btn-warning mt-1"
+                                                    onclick="setMain(@img.Id)">
+                                                انتخاب اصلی
+                                            </button>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+
+
+
+                <div class="mb-3">
+                    <label>تغییر تصویر</label>
+                    <input type="file" name="MainImage" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label>افزودن تصاویر جدید به گالری</label>
+                    <input type="file" name="GalleryImages" multiple class="form-control" />
+                </div>
+
+
+                <div class="mb-3">
+                    <label>دسته‌بندی‌ها</label>
+                    <select name="SelectedCategories" multiple class="form-control">
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat.Id"
+                                @(Model.SelectedCategories.Contains(cat.Id) ? "selected" : "")>
+                                @cat.Title
+                            </option>
+                        }
+                    </select>
+                </div>
+
+
+              <div class="mb-3">
+                <label>مشخصات فنی</label>
+                <div id="specContainer">
+
+                    @if (Model.SpecKeys != null && Model.SpecKeys.Any())
+                    {
+                        for (int i = 0; i < Model.SpecKeys.Count; i++)
+                        {
+                            <div class="row mb-2">
+                                <div class="col-md-5">
+                                    <input type="text"
+                                           name="SpecKeys"
+                                           class="form-control"
+                                           value="@Model.SpecKeys[i]"
+                                           placeholder="مثلا: رنگ" />
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text"
+                                           name="SpecValues"
+                                           class="form-control"
+                                           value="@Model.SpecValues[i]"
+                                           placeholder="مثلا: مشکی" />
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger" onclick="removeSpec(this)">×</button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="row mb-2">
+                            <div class="col-md-5">
+                                <input type="text" name="SpecKeys" class="form-control" placeholder="مثلا: رنگ" />
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" name="SpecValues" class="form-control" placeholder="مثلا: مشکی" />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger" onclick="removeSpec(this)">×</button>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+
+                <button type="button" class="btn btn-sm btn-success mt-2" onclick="addSpec()">افزودن مشخصه</button>
+            </div>
+
+
+                <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+                <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+            }
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<script>
+    function deleteImage(id) {
+        if (!confirm("حذف شود؟")) return;
+
+        fetch('/Admin/Product/DeleteImage/' + id, { method: 'POST' })
+            .then(r => location.reload());
+    }
+
+    function setMain(id) {
+        fetch('/Admin/Product/SetMainImage/' + id, { method: 'POST' })
+            .then(r => location.reload());
+    }
+    function addSpec() {
+        const row = `
+        <div class="row mb-2">
+            <div class="col-md-5">
+                <input type="text" name="SpecKeys" class="form-control" placeholder="مثلا: وزن" />
+            </div>
+            <div class="col-md-5">
+                <input type="text" name="SpecValues" class="form-control" placeholder="مثلا: ۲ کیلو" />
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger" onclick="removeSpec(this)">×</button>
+            </div>
+        </div>`;
+        document.getElementById("specContainer").insertAdjacentHTML("beforeend", row);
+    }
+
+    function removeSpec(btn) {
+        btn.closest(".row").remove();
+    }
+</script>
+}

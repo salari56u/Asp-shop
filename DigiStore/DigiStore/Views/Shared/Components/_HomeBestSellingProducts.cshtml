@@ -1,4 +1,6 @@
-﻿<div class="elementor-element elementor-element-2403a15 e-flex e-con-boxed e-con e-parent" data-id="2403a15" data-element_type="container">
+﻿@using DigiStore.Models
+@model List<Product>
+<div class="elementor-element elementor-element-2403a15 e-flex e-con-boxed e-con e-parent" data-id="2403a15" data-element_type="container">
     <div class="e-con-inner">
         <div class="elementor-element elementor-element-8e48596 elementor-widget elementor-widget-moboland_best_sell_widget" data-id="8e48596" data-element_type="widget" data-widget_type="moboland_best_sell_widget.default">
             <div class="elementor-widget-container">
@@ -23,10 +25,10 @@
                                 <span>رتبه 1</span>
                             </div>
                             <figure>
-                                <a href="product/%da%af%d9%88%d8%b4%db%8c-%d9%85%d9%88%d8%a8%d8%a7%db%8c%d9%84-%d8%a7%d9%be%d9%84-%d9%85%d8%af%d9%84-iphone-13-pro-max-zaa-%d8%af%d9%88-%d8%b3%db%8c%d9%85-%da%a9%d8%a7%d8%b1%d8%aa-%d8%b8%d8%b1/index.html"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123.webp 800w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-768x768.webp 768w" sizes="(max-width: 800px) 100vw, 800px" /></a>
+                                <a href="/Product/Index"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123.webp 800w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2024/10/dcd6e4e843bea3f070614a95d27b1181fdf23008_1727276123-768x768.webp 768w" sizes="(max-width: 800px) 100vw, 800px" /></a>
                             </figure>
                             <h2>
-                                <a href="product/%da%af%d9%88%d8%b4%db%8c-%d9%85%d9%88%d8%a8%d8%a7%db%8c%d9%84-%d8%a7%d9%be%d9%84-%d9%85%d8%af%d9%84-iphone-13-pro-max-zaa-%d8%af%d9%88-%d8%b3%db%8c%d9%85-%da%a9%d8%a7%d8%b1%d8%aa-%d8%b8%d8%b1/index.html" target="_blank"> گوشی موبایل اپل مدل iPhone 13 Pro Max ZAA دو سیم‌ ...</a>
+                                <a href="/Product/Index" target="_blank"> گوشی موبایل اپل مدل iPhone 13 Pro Max ZAA دو سیم‌ ...</a>
                             </h2>
 
                             <div class="price">
@@ -47,234 +49,52 @@
 
                         <div class="other-sell">
 
+                            @if(Model.Any())
+                            {
+                                foreach(var item in Model)
+                                {
+                                    <div class="product-item">
+                                        <figure>
+
+                                            <a href="/Product/Details/@item.Id/@item.Slug"> 
+                                                <img decoding="async" width="800" height="800" src="/wp-content/uploads/2025/01/@(item.MainImageName)" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt=""  sizes="(max-width: 800px) 100vw, 800px" /><i class="fa-regular fa-eye"></i></a>
+                                            @* <img decoding="async"
+                                                 src="/wp-content/uploads/2025/01/@(product.MainImageName)"
+                                                 alt="@(product.Title)" /> *@
+                                        </figure>
+                                        <h2>
+                                            <a href="/Product/Details/@item.Id/@item.Slug"
+                                               target="_blank"> @item.Title 
+                                               </a>
+                                        </h2>
+
+                                        <div class="down-product">
+                                            <span class="number">
+                                                2
+                                            </span>
+
+                                            <div class="price">
+                                                @if (item.OldPrice.HasValue)
+                                                {
+                                                    <del aria-hidden="true">
+                                                        <span class="woocommerce-Price-amount amount">
+                                                            @item.OldPrice.Value.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span>
+                                                        </span>
+                                                    </del>
+                                                }
+
+                                                <ins aria-hidden="true" style="text-decoration: none;">
+                                                    <span class="woocommerce-Price-amount amount">
+                                                        @item.Price.ToString("N0")&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span>
+                                                    </span>
+                                                </ins>
+                                            </div>
 
 
-                            <div class="product-item">
-                                <figure>
-
-                                    <a href="product/%d8%b4%d8%a7%d8%b1%da%98%d8%b1-%d9%81%d9%86%d8%af%da%a9%db%8c-75%d9%88%d8%a7%d8%aa-%d9%85%da%a9-%d8%af%d9%88%d8%af%d9%88-%d9%85%d8%af%d9%84-cc-3690/index.html"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2024/10/e38b246ef16003fb28a7785522ed4e840c4ed5f9_1699212832.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2024/10/e38b246ef16003fb28a7785522ed4e840c4ed5f9_1699212832.webp 800w, https://mobowebs.ir//wp-content/uploads/2024/10/e38b246ef16003fb28a7785522ed4e840c4ed5f9_1699212832-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2024/10/e38b246ef16003fb28a7785522ed4e840c4ed5f9_1699212832-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2024/10/e38b246ef16003fb28a7785522ed4e840c4ed5f9_1699212832-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2024/10/e38b246ef16003fb28a7785522ed4e840c4ed5f9_1699212832-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2024/10/e38b246ef16003fb28a7785522ed4e840c4ed5f9_1699212832-768x768.webp 768w" sizes="(max-width: 800px) 100vw, 800px" /><i class="fa-regular fa-eye"></i></a>
-                                </figure>
-                                <h2>
-                                    <a href="product/%d8%b4%d8%a7%d8%b1%da%98%d8%b1-%d9%81%d9%86%d8%af%da%a9%db%8c-75%d9%88%d8%a7%d8%aa-%d9%85%da%a9-%d8%af%d9%88%d8%af%d9%88-%d9%85%d8%af%d9%84-cc-3690/index.html"
-                                       target="_blank"> شارژر فندکی 75وات مک دودو مدل CC-3690</a>
-                                </h2>
-
-                                <div class="down-product">
-                                    <span class="number">
-                                        2
-                                    </span>
-
-                                    <div class="price">
-
-                                        <del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>553,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span></del> <span class="screen-reader-text">قیمت اصلی: 553,000&nbsp;تومان بود.</span><ins aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>450,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span></ins><span class="screen-reader-text">قیمت فعلی: 450,000&nbsp;تومان.</span>
+                                        </div>
                                     </div>
-
-
-                                </div>
-                            </div>
-
-
-
-                            <div class="product-item">
-                                <figure>
-
-                                    <a href="product/%d9%84%d9%be-%d8%aa%d8%a7%d9%be-15-6-%d8%a7%db%8c%d9%86%da%86%db%8c-%d8%a7%db%8c%d8%b3%d9%88%d8%b3-%d9%85%d8%af%d9%84-tuf-gaming-f15-fx506he-hn393w-i7-11800h-24gb-512ssd-rtx3050ti-w/index.html"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2024/10/122d6805fe4efa3648dd1810c05e2bd30ceb0d3c_1713565442.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2024/10/122d6805fe4efa3648dd1810c05e2bd30ceb0d3c_1713565442.webp 800w, https://mobowebs.ir//wp-content/uploads/2024/10/122d6805fe4efa3648dd1810c05e2bd30ceb0d3c_1713565442-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2024/10/122d6805fe4efa3648dd1810c05e2bd30ceb0d3c_1713565442-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2024/10/122d6805fe4efa3648dd1810c05e2bd30ceb0d3c_1713565442-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2024/10/122d6805fe4efa3648dd1810c05e2bd30ceb0d3c_1713565442-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2024/10/122d6805fe4efa3648dd1810c05e2bd30ceb0d3c_1713565442-768x768.webp 768w" sizes="(max-width: 800px) 100vw, 800px" /><i class="fa-regular fa-eye"></i></a>
-                                </figure>
-                                <h2>
-                                    <a href="product/%d9%84%d9%be-%d8%aa%d8%a7%d9%be-15-6-%d8%a7%db%8c%d9%86%da%86%db%8c-%d8%a7%db%8c%d8%b3%d9%88%d8%b3-%d9%85%d8%af%d9%84-tuf-gaming-f15-fx506he-hn393w-i7-11800h-24gb-512ssd-rtx3050ti-w/index.html"
-                                       target="_blank"> لپ تاپ 15.6 اینچی ایسوس مدل TUF Gaming F15 FX506HE...</a>
-                                </h2>
-
-                                <div class="down-product">
-                                    <span class="number">
-                                        3
-                                    </span>
-
-                                    <div class="price">
-
-                                        <del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>61,500,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span></del> <span class="screen-reader-text">قیمت اصلی: 61,500,000&nbsp;تومان بود.</span><ins aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi>50,000,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span></ins><span class="screen-reader-text">قیمت فعلی: 50,000,000&nbsp;تومان.</span>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-
-
-                            <div class="product-item">
-                                <figure>
-
-                                    <a href="product/%d9%87%d8%af%d9%81%d9%88%d9%86-%d8%a8%d9%84%d9%88%d8%aa%d9%88%d8%ab%db%8c-%d9%87%d9%88%d8%a2%d9%88%db%8c-%d9%85%d8%af%d9%84-freebuds-pro-3/index.html"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2024/10/4198cf8de9f60ebdcfa961d18178e938e9854181_1704030068.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2024/10/4198cf8de9f60ebdcfa961d18178e938e9854181_1704030068.webp 800w, https://mobowebs.ir//wp-content/uploads/2024/10/4198cf8de9f60ebdcfa961d18178e938e9854181_1704030068-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2024/10/4198cf8de9f60ebdcfa961d18178e938e9854181_1704030068-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2024/10/4198cf8de9f60ebdcfa961d18178e938e9854181_1704030068-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2024/10/4198cf8de9f60ebdcfa961d18178e938e9854181_1704030068-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2024/10/4198cf8de9f60ebdcfa961d18178e938e9854181_1704030068-768x768.webp 768w" sizes="(max-width: 800px) 100vw, 800px" /><i class="fa-regular fa-eye"></i></a>
-                                </figure>
-                                <h2>
-                                    <a href="product/%d9%87%d8%af%d9%81%d9%88%d9%86-%d8%a8%d9%84%d9%88%d8%aa%d9%88%d8%ab%db%8c-%d9%87%d9%88%d8%a2%d9%88%db%8c-%d9%85%d8%af%d9%84-freebuds-pro-3/index.html"
-                                       target="_blank"> هدفون بلوتوثی هوآوی مدل FreeBuds Pro 3</a>
-                                </h2>
-
-                                <div class="down-product">
-                                    <span class="number">
-                                        4
-                                    </span>
-                                    <div class='call-us'><i class='fa-solid fa-phone-flip'></i>تماس بگیرید</div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="product-item">
-                                <figure>
-
-                                    <a href="product/%d8%b3%d8%a7%d8%b9%d8%aa-%d9%87%d9%88%d8%b4%d9%85%d9%86%d8%af-%d8%a7%d9%be%d9%84-%d9%85%d8%af%d9%84-ultra-2-titanium-case-trail-loop-49mm/index.html"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2024/10/3905be13315dab740ae431b19dc9b70e6104c99e_1696071106.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2024/10/3905be13315dab740ae431b19dc9b70e6104c99e_1696071106.webp 800w, https://mobowebs.ir//wp-content/uploads/2024/10/3905be13315dab740ae431b19dc9b70e6104c99e_1696071106-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2024/10/3905be13315dab740ae431b19dc9b70e6104c99e_1696071106-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2024/10/3905be13315dab740ae431b19dc9b70e6104c99e_1696071106-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2024/10/3905be13315dab740ae431b19dc9b70e6104c99e_1696071106-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2024/10/3905be13315dab740ae431b19dc9b70e6104c99e_1696071106-768x768.webp 768w" sizes="(max-width: 800px) 100vw, 800px" /><i class="fa-regular fa-eye"></i></a>
-                                </figure>
-                                <h2>
-                                    <a href="product/%d8%b3%d8%a7%d8%b9%d8%aa-%d9%87%d9%88%d8%b4%d9%85%d9%86%d8%af-%d8%a7%d9%be%d9%84-%d9%85%d8%af%d9%84-ultra-2-titanium-case-trail-loop-49mm/index.html"
-                                       target="_blank"> ساعت هوشمند اپل مدل Ultra 2 Titanium Case Trail Lo...</a>
-                                </h2>
-
-                                <div class="down-product">
-                                    <span class="number">
-                                        5
-                                    </span>
-
-                                    <div class="price">
-
-                                        <span class="woocommerce-Price-amount amount"><bdi>50,900,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-
-
-                            <div class="product-item">
-                                <figure>
-
-                                    <a href="product/%da%af%d9%88%d8%b4%db%8c-%d9%85%d9%88%d8%a8%d8%a7%db%8c%d9%84-%d8%b3%d8%a7%d9%85%d8%b3%d9%88%d9%86%da%af-%d9%85%d8%af%d9%84-galaxy-s24-ultra-%d8%af%d9%88-%d8%b3%db%8c%d9%85-%da%a9%d8%a7%d8%b1%d8%aa/index.html"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2024/11/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2024/11/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574.webp 800w, https://mobowebs.ir//wp-content/uploads/2024/11/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2024/11/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2024/11/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2024/11/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2024/11/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574-768x768.webp 768w, https://mobowebs.ir//wp-content/uploads/2024/11/c23b49b0be1c4ae5b2a3d7a3281d2f1731065243_1726037574-50x50.webp 50w" sizes="(max-width: 800px) 100vw, 800px" /><i class="fa-regular fa-eye"></i></a>
-                                </figure>
-                                <h2>
-                                    <a href="product/%da%af%d9%88%d8%b4%db%8c-%d9%85%d9%88%d8%a8%d8%a7%db%8c%d9%84-%d8%b3%d8%a7%d9%85%d8%b3%d9%88%d9%86%da%af-%d9%85%d8%af%d9%84-galaxy-s24-ultra-%d8%af%d9%88-%d8%b3%db%8c%d9%85-%da%a9%d8%a7%d8%b1%d8%aa/index.html"
-                                       target="_blank"> گوشی موبایل سامسونگ مدل Galaxy S24 Ultra دو سیم کا...</a>
-                                </h2>
-
-                                <div class="down-product">
-                                    <span class="number">
-                                        6
-                                    </span>
-
-                                    <div class="price">
-
-                                        <span class="woocommerce-Price-amount amount"><bdi>62,599,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-
-
-                            <div class="product-item">
-                                <figure>
-
-                                    <a href="product/%d9%be%d8%a7%d9%88%d8%b1%d8%a8%d8%a7%d9%86%da%a9-%d8%a7%d9%86%da%a9%d8%b1-%d9%85%d8%af%d9%84-a1287h12-%d8%b8%d8%b1%d9%81%db%8c%d8%aa-20000-%d9%85%db%8c%d9%84%db%8c-%d8%a2%d9%85%d9%be%d8%b1-%d8%b3/index.html"> <img loading="lazy" decoding="async" width="652" height="652" src="/wp-content/uploads/2025/01/5e87c3ac35bacbc915caf6a65d0a5e73ef962e0a_1649941373.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2025/01/5e87c3ac35bacbc915caf6a65d0a5e73ef962e0a_1649941373.webp 652w, https://mobowebs.ir//wp-content/uploads/2025/01/5e87c3ac35bacbc915caf6a65d0a5e73ef962e0a_1649941373-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2025/01/5e87c3ac35bacbc915caf6a65d0a5e73ef962e0a_1649941373-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2025/01/5e87c3ac35bacbc915caf6a65d0a5e73ef962e0a_1649941373-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2025/01/5e87c3ac35bacbc915caf6a65d0a5e73ef962e0a_1649941373-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2025/01/5e87c3ac35bacbc915caf6a65d0a5e73ef962e0a_1649941373-50x50.webp 50w" sizes="(max-width: 652px) 100vw, 652px" /><i class="fa-regular fa-eye"></i></a>
-                                </figure>
-                                <h2>
-                                    <a href="product/%d9%be%d8%a7%d9%88%d8%b1%d8%a8%d8%a7%d9%86%da%a9-%d8%a7%d9%86%da%a9%d8%b1-%d9%85%d8%af%d9%84-a1287h12-%d8%b8%d8%b1%d9%81%db%8c%d8%aa-20000-%d9%85%db%8c%d9%84%db%8c-%d8%a2%d9%85%d9%be%d8%b1-%d8%b3/index.html"
-                                       target="_blank"> پاوربانک انکر مدل A1287H12 ظرفیت 20000 میلی آمپر س...</a>
-                                </h2>
-
-                                <div class="down-product">
-                                    <span class="number">
-                                        7
-                                    </span>
-
-                                    <div class="price">
-
-                                        <span class="woocommerce-Price-amount amount"><bdi>3,250,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-
-
-                            <div class="product-item">
-                                <figure>
-
-                                    <a href="product/%da%af%d9%88%d8%b4%db%8c-%d9%85%d9%88%d8%a8%d8%a7%db%8c%d9%84-%d8%b3%d8%a7%d9%85%d8%b3%d9%88%d9%86%da%af-%d9%85%d8%af%d9%84-galaxy-a05s-%d8%af%d9%88-%d8%b3%db%8c%d9%85-%da%a9%d8%a7%d8%b1%d8%aa-%d8%b1/index.html"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2025/01/c69fb24b5a8c42be37539417cafa17b5637ecf60_1726038040.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2025/01/c69fb24b5a8c42be37539417cafa17b5637ecf60_1726038040.webp 800w, https://mobowebs.ir//wp-content/uploads/2025/01/c69fb24b5a8c42be37539417cafa17b5637ecf60_1726038040-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2025/01/c69fb24b5a8c42be37539417cafa17b5637ecf60_1726038040-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2025/01/c69fb24b5a8c42be37539417cafa17b5637ecf60_1726038040-768x768.webp 768w, https://mobowebs.ir//wp-content/uploads/2025/01/c69fb24b5a8c42be37539417cafa17b5637ecf60_1726038040-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2025/01/c69fb24b5a8c42be37539417cafa17b5637ecf60_1726038040-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2025/01/c69fb24b5a8c42be37539417cafa17b5637ecf60_1726038040-50x50.webp 50w" sizes="(max-width: 800px) 100vw, 800px" /><i class="fa-regular fa-eye"></i></a>
-                                </figure>
-                                <h2>
-                                    <a href="product/%da%af%d9%88%d8%b4%db%8c-%d9%85%d9%88%d8%a8%d8%a7%db%8c%d9%84-%d8%b3%d8%a7%d9%85%d8%b3%d9%88%d9%86%da%af-%d9%85%d8%af%d9%84-galaxy-a05s-%d8%af%d9%88-%d8%b3%db%8c%d9%85-%da%a9%d8%a7%d8%b1%d8%aa-%d8%b1/index.html"
-                                       target="_blank"> گوشی موبایل سامسونگ مدل Galaxy A05s دو سیم کارت رم...</a>
-                                </h2>
-
-                                <div class="down-product">
-                                    <span class="number">
-                                        8
-                                    </span>
-
-                                    <div class="price">
-
-                                        <span class="woocommerce-Price-amount amount"><bdi>8,600,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-
-
-                            <div class="product-item">
-                                <figure>
-
-                                    <a href="product/%d9%84%d9%be-%d8%aa%d8%a7%d9%be-15-6-%d8%a7%db%8c%d9%86%da%86%db%8c-%d8%a7%db%8c%d8%b3%d9%88%d8%b3-%d9%85%d8%af%d9%84-vivobook-15-x515ma-br001-celeron-n4020-8gb-ddr4-512gb-ssd-tft/index.html"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2025/01/8cade9127074329e1dec7706c076bfea6a36d9ab_1730703289.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2025/01/8cade9127074329e1dec7706c076bfea6a36d9ab_1730703289.webp 800w, https://mobowebs.ir//wp-content/uploads/2025/01/8cade9127074329e1dec7706c076bfea6a36d9ab_1730703289-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2025/01/8cade9127074329e1dec7706c076bfea6a36d9ab_1730703289-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2025/01/8cade9127074329e1dec7706c076bfea6a36d9ab_1730703289-768x768.webp 768w, https://mobowebs.ir//wp-content/uploads/2025/01/8cade9127074329e1dec7706c076bfea6a36d9ab_1730703289-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2025/01/8cade9127074329e1dec7706c076bfea6a36d9ab_1730703289-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2025/01/8cade9127074329e1dec7706c076bfea6a36d9ab_1730703289-50x50.webp 50w" sizes="(max-width: 800px) 100vw, 800px" /><i class="fa-regular fa-eye"></i></a>
-                                </figure>
-                                <h2>
-                                    <a href="product/%d9%84%d9%be-%d8%aa%d8%a7%d9%be-15-6-%d8%a7%db%8c%d9%86%da%86%db%8c-%d8%a7%db%8c%d8%b3%d9%88%d8%b3-%d9%85%d8%af%d9%84-vivobook-15-x515ma-br001-celeron-n4020-8gb-ddr4-512gb-ssd-tft/index.html"
-                                       target="_blank"> لپ تاپ 15.6 اینچی ایسوس مدل Vivobook 15 X515MA-BR0...</a>
-                                </h2>
-
-                                <div class="down-product">
-                                    <span class="number">
-                                        9
-                                    </span>
-
-                                    <div class="price">
-
-                                        <span class="woocommerce-Price-amount amount"><bdi>20,990,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-
-
-                            <div class="product-item">
-                                <figure>
-
-                                    <a href="product/%d9%84%d9%be-%d8%aa%d8%a7%d9%be-16-%d8%a7%db%8c%d9%86%da%86%db%8c-%d8%a7%db%8c%d8%b3%d8%b1-%d9%85%d8%af%d9%84-nitro-v16-anv16-71-760q-i7-14650hx-32gb-ddr5-1tb-ssd-rtx4050-fhd/index.html"> <img loading="lazy" decoding="async" width="800" height="800" src="/wp-content/uploads/2025/01/a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537.webp" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" srcset="https://mobowebs.ir//wp-content/uploads/2025/01/a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537.webp 800w, https://mobowebs.ir//wp-content/uploads/2025/01/a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537-300x300.webp 300w, https://mobowebs.ir//wp-content/uploads/2025/01/a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537-150x150.webp 150w, https://mobowebs.ir//wp-content/uploads/2025/01/a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537-768x768.webp 768w, https://mobowebs.ir//wp-content/uploads/2025/01/a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537-600x600.webp 600w, https://mobowebs.ir//wp-content/uploads/2025/01/a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537-100x100.webp 100w, https://mobowebs.ir//wp-content/uploads/2025/01/a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537-50x50.webp 50w" sizes="(max-width: 800px) 100vw, 800px" /><i class="fa-regular fa-eye"></i></a>
-                                </figure>
-                                <h2>
-                                    <a href="product/%d9%84%d9%be-%d8%aa%d8%a7%d9%be-16-%d8%a7%db%8c%d9%86%da%86%db%8c-%d8%a7%db%8c%d8%b3%d8%b1-%d9%85%d8%af%d9%84-nitro-v16-anv16-71-760q-i7-14650hx-32gb-ddr5-1tb-ssd-rtx4050-fhd/index.html"
-                                       target="_blank"> لپ تاپ 16 اینچی ایسر مدل Nitro V16 ANV16-71-760Q-i...</a>
-                                </h2>
-
-                                <div class="down-product">
-                                    <span class="number">
-                                        10
-                                    </span>
-
-                                    <div class="price">
-
-                                        <span class="woocommerce-Price-amount amount"><bdi>91,350,000&nbsp;<span class="woocommerce-Price-currencySymbol">تومان</span></bdi></span>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
+                                }
+                            }
 
                         </div>
 

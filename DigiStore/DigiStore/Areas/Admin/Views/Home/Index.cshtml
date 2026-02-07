@@ -1,0 +1,125 @@
+﻿@model DigiStore.Areas.Admin.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "پیشخوان مدیریت";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml"; 
+}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">پیشخوان</h1>
+</div>
+
+<!-- ردیف کارت‌های آمار -->
+<div class="row mb-4">
+    <!-- کارت کاربران -->
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">کاربران</h5>
+                        <h3 class="font-weight-bold">@Model.UsersCount</h3>
+                    </div>
+                    <i class="fa fa-users fa-3x opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+                <a href="/Admin/Users" class="text-white text-decoration-none small">مدیریت کاربران &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- کارت محصولات -->
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">محصولات</h5>
+                        <h3 class="font-weight-bold">@Model.ProductsCount</h3>
+                    </div>
+                    <i class="fa fa-box-open fa-3x opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+                <a href="/Admin/Product" class="text-white text-decoration-none small">مدیریت محصولات &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- جدول هشدارهای موجودی -->
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fa fa-exclamation-triangle me-2"></i> هشدار موجودی انبار</h5>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.LowStockProducts.Any())
+                {
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>نام محصول</th>
+                                <th class="text-center">موجودی</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.LowStockProducts)
+                            {
+                                <tr>
+                                    <td>@item.Title</td>
+                                    <td class="text-center text-danger fw-bold">@item.Stock</td>
+                                    <td>
+                                        <a href="/Admin/Product/Edit/@item.Id" class="btn btn-sm btn-outline-primary">افزایش موجودی</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="p-3 text-success text-center">
+                        <i class="fa fa-check-circle fa-2x mb-2"></i>
+                        <p class="mb-0">موجودی تمام محصولات کافی است.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+ 
+</div>
+
+<div class="row">
+  
+
+    <!-- جدول کاربران جدید -->
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fa fa-user-plus me-2"></i> کاربران جدید</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>نام کاربری</th>
+                            <th>ایمیل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.RecentUsers)
+                        {
+                            <tr>
+                                <td>@user.UserName</td>
+                                <td>@user.Email</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/Admin/Users" class="btn btn-sm btn-link">مشاهده همه کاربران</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -328,19 +328,24 @@
 
   <ItemGroup>
     <PackageReference Include="Kavenegar" Version="1.2.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+
+	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Utilities\" />
   </ItemGroup>
 
@@ -529,8 +534,8 @@
     <None Include="wwwroot\wp-content\uploads\2025\01\050500b45242f3487cc498061c936bc004d2cec7_1732827538.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\0770d1b82583fc3b8c10ee2cd4e389727461cc91_1732916084.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\1.jpg" />
-    <None Include="wwwroot\wp-content\uploads\2025\01\1.webp" />
-    <None Include="wwwroot\wp-content\uploads\2025\01\10.webp" />
+    <None Include="wwwroot\wp-content\uploads\Categories\1.webp" />
+    <None Include="wwwroot\wp-content\uploads\Categories\10.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\124878a5bcd5ada0c44927fb8f3a8e7fd73fa693_1611525899-600x600.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\124878a5bcd5ada0c44927fb8f3a8e7fd73fa693_1611525899.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\14t-3.webp" />
@@ -541,12 +546,12 @@
     <None Include="wwwroot\wp-content\uploads\2025\01\1bdc99d18a23285098b643ce97dd29a0913b0db1_1721134733-600x600.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\1bdc99d18a23285098b643ce97dd29a0913b0db1_1721134733.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\2.jpg" />
-    <None Include="wwwroot\wp-content\uploads\2025\01\2.webp" />
+    <None Include="wwwroot\wp-content\uploads\Categories\2.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\20240715154753_Samsung-Buds3-Buds3Pro-TWeb.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\2222.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\2c379ad732d9612a8ab73ba8386618c08551d832_1732827542.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\3.jpg" />
-    <None Include="wwwroot\wp-content\uploads\2025\01\3.webp" />
+    <None Include="wwwroot\wp-content\uploads\Categories\3.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\33a2504472348cad50787f99a9cb31cdb4c097c1_1611525824.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\3642486d67be79a3f73d05531665a4e7a1e5b5f1_1730201314.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\3ff5e50a4052e6433cc2581f2a09b02445cbda22_1721134737-600x600.webp" />
@@ -557,24 +562,24 @@
     <None Include="wwwroot\wp-content\uploads\2025\01\4c5379ffef3ac47a91a03d2f80642caca5e1516c_1732827538.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\4d4ee92691c24fb2746651bfc70b6b9f47b83d22_1732827541.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\5.jpg" />
-    <None Include="wwwroot\wp-content\uploads\2025\01\5.webp" />
+    <None Include="wwwroot\wp-content\uploads\Categories\5.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\585b7a0da00ebc7040aff36f66eb98636ede0c73_1732827541.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\5a489308316ea3c28a13c0aa3c1d57cbc1c63012_1732827540.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\5e87c3ac35bacbc915caf6a65d0a5e73ef962e0a_1649941373.webp" />
-    <None Include="wwwroot\wp-content\uploads\2025\01\6.webp" />
+    <None Include="wwwroot\wp-content\uploads\Categories\6.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\6041a029299079fddd2b2807ba4326a84f09d60a_1719849107.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\614ec47f9b46f1a2e7f9aefc83ac84fafe0f4308_1693397602.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\64d7d92e1d574cec68a2648fee9ad67e544cdfa0_1732916090.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\673beeacd35379a3944551e2ca51389730d7703d_1736598672.webp" />
-    <None Include="wwwroot\wp-content\uploads\2025\01\7.webp" />
+    <None Include="wwwroot\wp-content\uploads\Categories\7.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\709122f26935835f5a88c8e55797a75ed072fd6c_1611525833-300x300.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\709122f26935835f5a88c8e55797a75ed072fd6c_1611525833-600x600.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\709122f26935835f5a88c8e55797a75ed072fd6c_1611525833.webp" />
-    <None Include="wwwroot\wp-content\uploads\2025\01\8.webp" />
+    <None Include="wwwroot\wp-content\uploads\Categories\8.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\80c3756f357f9dea5174203e4dd8bdc96d169541_1721134736-600x600.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\80c3756f357f9dea5174203e4dd8bdc96d169541_1721134736.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\8cade9127074329e1dec7706c076bfea6a36d9ab_1730703289.webp" />
-    <None Include="wwwroot\wp-content\uploads\2025\01\9.webp" />
+    <None Include="wwwroot\wp-content\uploads\Categories\9.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\9b6b9fc155b039287b95cc551cd5f902216cdf6a_1705206515.jpg" />
     <None Include="wwwroot\wp-content\uploads\2025\01\a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537-300x300.webp" />
     <None Include="wwwroot\wp-content\uploads\2025\01\a0a354e30ca36fd340a29f4b643c62e6e2078256_1732827537-600x600.webp" />
